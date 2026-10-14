@@ -1,0 +1,4839 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Distard</title>
+<link rel="icon" href="image.png" sizes="16x16" type="image/png" />  
+<style>
+*{
+  box-sizing:border-box
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body{
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:#11131a;
+  color:#eef1f7;
+  overflow:hidden;
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.muted{
+  color:#9ca3b2;
+  font-size:14px;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+#auth{
+  width:100%;
+  height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      #2c2547 0,
+      #11131a 42%
+    ),
+    #11131a;
+}
+
+.card{
+  width:min(430px,92vw);
+  background:#191c25;
+  border:1px solid #303543;
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 20px 70px #0008;
+}
+
+.logo{
+  font-size:32px;
+  font-weight:800;
+  letter-spacing:-1px;
+  margin-bottom:8px;
+}
+
+.logo span,
+.brand b{
+  color:#a78bfa;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin:22px 0;
+}
+
+.tabs button{
+  flex:1;
+  background:#242834;
+  color:#b8becb;
+  border-radius:10px;
+  padding:10px 14px;
+}
+
+.tabs button.active{
+  background:#7c5cff;
+  color:white;
+}
+
+.field{
+  margin:12px 0;
+}
+
+.field label{
+  display:block;
+  font-size:13px;
+  color:#aeb5c3;
+  margin-bottom:6px;
+}
+
+.field input,
+.field textarea{
+  width:100%;
+  background:#10131a;
+  border:1px solid #343946;
+  color:white;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+}
+
+.field input:focus,
+.field textarea:focus{
+  border-color:#7c5cff;
+}
+
+.primary{
+  width:100%;
+  background:#7c5cff;
+  color:white;
+  border-radius:10px;
+  padding:12px;
+  font-weight:700;
+  margin-top:8px;
+}
+
+.primary:hover{
+  filter:brightness(1.08);
+}
+
+.primary:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.error{
+  color:#ff8798;
+  margin-top:10px;
+  min-height:18px;
+}
+
+.success{
+  color:#7ee7ad;
+  margin-top:10px;
+}
+
+.small{
+  font-size:12px;
+}
+
+/* =========================
+   APP
+========================= */
+
+#app{
+  height:100vh;
+  display:grid;
+  grid-template-columns:240px 1fr 310px;
+  background:#12151c;
+}
+
+.sidebar{
+  background:#171a22;
+  border-right:1px solid #292e39;
+  display:flex;
+  flex-direction:column;
+  padding:16px;
+}
+
+.brand{
+  font-size:25px;
+  font-weight:800;
+  margin:5px 8px 20px;
+}
+
+.nav{
+  display:grid;
+  gap:7px;
+}
+
+.nav button{
+  background:#242834;
+  color:#b8becb;
+  border-radius:10px;
+  padding:10px 14px;
+  text-align:left;
+}
+
+.nav button:hover{
+  background:#303543;
+}
+
+.nav button.active{
+  background:#7c5cff;
+  color:white;
+}
+
+.userbox{
+  margin-top:auto;
+  background:#20242e;
+  border-radius:12px;
+  padding:12px;
+}
+
+.userrow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#7c5cff;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+  flex:none;
+}
+
+.usertext{
+  display:flex;
+  gap:9px;
+  align-items:center;
+  min-width:0;
+}
+
+.usertext>div:last-child{
+  min-width:0;
+}
+
+.usertext b{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:120px;
+}
+
+.logout{
+  background:#303541;
+  color:#ddd;
+  border-radius:8px;
+  padding:7px;
+}
+
+.account-switch{
+  width:100%;
+  margin-top:10px;
+  background:#292f3b;
+  color:#fff;
+  border-radius:8px;
+  padding:8px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.topbar{
+  height:62px;
+  border-bottom:1px solid #292e39;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  font-weight:700;
+}
+
+.content{
+  padding:22px;
+  overflow:auto;
+  height:calc(100vh - 62px);
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.content:has(#chats.active){
+  overflow:hidden;
+}
+
+#chats.active{
+  height:100%;
+  min-height:0;
+}
+
+#chats.active .chat-layout{
+  height:100%;
+  min-height:0;
+}
+
+.section h2{
+  margin:0 0 18px;
+}
+
+.item{
+  background:#191d26;
+  border:1px solid #2d3340;
+  border-radius:14px;
+  padding:15px;
+}
+
+.item h3{
+  margin:0 0 6px;
+}
+
+.item p{
+  margin:5px 0;
+  color:#aeb5c3;
+}
+
+.item button{
+  margin:5px 5px 0 0;
+  padding:8px 10px;
+  border-radius:8px;
+  background:#292f3b;
+  color:white;
+}
+
+.item button:hover{
+  filter:brightness(1.1);
+}
+
+.primarybtn{
+  background:#7c5cff!important;
+  color:white!important;
+}
+
+.dangerbtn{
+  background:#a33a50!important;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fill,minmax(240px,1fr));
+  gap:14px;
+}
+
+.search{
+  width:100%;
+  background:#171a22;
+  border:1px solid #343946;
+  color:white;
+  padding:11px;
+  border-radius:10px;
+  margin-bottom:10px;
+  outline:none;
+}
+
+.search:focus{
+  border-color:#7c5cff;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat-layout{
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-columns:280px 1fr;
+}
+
+.chat-list{
+  border-right:1px solid #292e39;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:10px;
+}
+
+.chatitem{
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:5px;
+  cursor:pointer;
+}
+
+.chatitem:hover,
+.chatitem.sel{
+  background:#232834;
+}
+
+.chatname{
+  font-weight:700;
+}
+
+.chatpreview{
+  font-size:12px;
+  color:#9299a8;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chat{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  min-height:0;
+  height:100%;
+}
+
+.chathead{
+  flex:0 0 auto;
+  position:relative;
+  z-index:2;
+  background:#11131a;
+  padding:15px 18px;
+  border-bottom:1px solid #292e39;
+  font-weight:700;
+}
+
+.messages{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.msg{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  width:fit-content;
+  max-width:85%;
+  align-self:flex-start;
+  background:transparent !important;
+  border:0;
+  border-radius:0;
+  padding:0;
+  word-break:break-word;
+}
+
+.msg.mine{
+  align-items:flex-end;
+  align-self:flex-end;
+  background:transparent !important;
+}
+
+/* 吹き出しだけに背景色を付け、返信・リアクション操作は外側に置く */
+.msg-bubble{
+  max-width:100%;
+  width:fit-content;
+  min-width:0;
+  background:#252a35;
+  border-radius:12px;
+  padding:9px 12px;
+  word-break:break-word;
+}
+.msg.mine .msg-bubble{background:#684fe0}
+.msg small{
+  display:block;
+  color:#c5c9d3;
+  font-size:10px;
+  margin-top:4px;
+}
+
+.presence-line{display:flex;align-items:center;gap:6px;font-size:11px;color:#aab3c5;margin-top:3px}
+.presence-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#697386;flex:0 0 auto}
+.presence-dot.online{background:#39d98a;box-shadow:0 0 0 2px rgba(57,217,138,.13)}
+.chat-presence{display:inline-flex;align-items:center;gap:5px;margin-left:5px;font-size:10px;color:#aab3c5}
+.read-receipt{font-size:10px;color:#a9b7ff;margin-top:3px;align-self:flex-end;padding:0 2px}
+.typing-indicator{display:none;flex:0 0 auto;min-height:20px;padding:2px 18px 6px;color:#aab3c5;font-size:12px;align-items:center;gap:7px}
+.typing-indicator.active{display:flex}
+.typing-dots{display:inline-flex;gap:3px;align-items:center}
+.typing-dots i{width:4px;height:4px;border-radius:50%;background:#a9b7ff;animation:typingBounce 1s infinite ease-in-out}
+.typing-dots i:nth-child(2){animation-delay:.15s}.typing-dots i:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+
+.message-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-top:4px;
+  max-width:100%;
+  opacity:.68;
+  transition:opacity .15s ease;
+}
+.msg:hover .message-actions,.msg:focus-within .message-actions{opacity:1}
+.message-actions button{
+  padding:2px 6px;
+  border-radius:5px;
+  background:transparent;
+  border:1px solid rgba(190,198,215,.18);
+  color:#c6ccda;
+  font-size:10px;
+  font-weight:400;
+}
+.message-actions button.danger{background:transparent;color:#c6a7ad;border-color:rgba(220,120,140,.2)}
+.message-actions button:hover{background:rgba(255,255,255,.08);color:#fff}
+.reply-preview{font-size:11px;color:#cbd1df;background:rgba(0,0,0,.16);border-left:2px solid #a9a0ff;padding:5px 7px;margin-bottom:6px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.message-reactions{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;max-width:100%}
+.reaction-chip{font-size:12px;padding:2px 6px;border:1px solid rgba(190,198,215,.25);border-radius:12px;background:rgba(0,0,0,.14);color:#eef0f8;cursor:pointer}
+.reaction-chip.mine{border-color:#a99cff;background:rgba(126,104,255,.22)}
+.reaction-picker{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;max-width:100%}
+.reaction-picker[hidden]{display:none}
+.reaction-picker button{padding:2px 5px;border-radius:6px;background:transparent;border:1px solid rgba(190,198,215,.16);font-size:14px}
+.replying-banner{display:none;padding:6px 12px;border-top:1px solid #292e39;background:rgba(126,104,255,.08);font-size:12px;color:#d8d3ff;align-items:center;justify-content:space-between;gap:8px}
+.replying-banner.active{display:flex}
+.replying-banner button{background:transparent;color:#d8d3ff;padding:2px 6px}
+
+.composer{
+  flex:0 0 auto;
+  display:flex;
+  gap:8px;
+  padding:12px;
+  border-top:1px solid #292e39;
+}
+
+.composer input{
+  flex:1;
+  min-width:0;
+  background:#1b1f28;
+  border:1px solid #343946;
+  color:white;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+}
+
+.composer input:focus{
+  border-color:#7c5cff;
+}
+
+.composer button{
+  background:#7c5cff;
+  color:white;
+  border-radius:10px;
+  padding:0 18px;
+}
+
+/* =========================
+   RIGHT
+========================= */
+
+.right{
+  background:#171a22;
+  border-left:1px solid #292e39;
+  padding:18px;
+  overflow:auto;
+}
+
+.right h3{
+  margin-top:3px;
+}
+
+.listrow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px 0;
+  border-bottom:1px solid #292e39;
+}
+
+.listrow button{
+  background:#292f3b;
+  color:white;
+  padding:7px 9px;
+  border-radius:8px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:grid;
+  place-items:center;
+  z-index:10;
+}
+
+.modalbox{
+  width:min(500px,92vw);
+  max-height:90vh;
+  overflow:auto;
+  background:#191d26;
+  border:1px solid #343946;
+  border-radius:16px;
+  padding:20px;
+}
+
+.memberpick{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin:7px 0;
+}
+
+.memberpick input{
+  width:auto;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  background:#262b37;
+  padding:12px 15px;
+  border-radius:10px;
+  box-shadow:0 10px 30px #0008;
+  z-index:30;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+  #app{
+    grid-template-columns:190px 1fr;
+  }
+
+  .right{
+    display:none;
+  }
+
+}
+
+@media(max-width:650px){
+
+  #app{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  .chat-layout{
+    grid-template-columns:1fr;
+  }
+
+  .chat-list{
+    display:none;
+  }
+
+  .topbar{
+    height:54px;
+  }
+
+  .content{
+    padding:15px;
+    height:calc(100vh - 54px);
+  }
+
+}
+/* =========================================
+   Distard レスポンシブ対応
+   現在のデザインを変更しない版
+   ========================================= */
+
+/* 横幅が小さくなったときだけ調整 */
+@media (max-width: 900px) {
+  .app,
+  .main-container,
+  .layout {
+    max-width: 100%;
+  }
+
+  .content,
+  .main-content {
+    min-width: 0;
+  }
+
+  .chat-layout {
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+  }
+}
+
+
+/* =========================================
+   スマートフォン
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  #chats.active .chat-layout{
+    height:100%;
+    min-height:0;
+  }
+  #chats.active .chat-list{
+    display:none;
+  }
+  #chats.active .chat{
+    flex:1 1 auto;
+    min-height:0;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 既存のコンテナを画面幅に収める */
+  .app,
+  .main,
+  .content,
+  .main-content,
+  .container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* 横並びになっている場所だけ縮小 */
+  .topbar {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .content,
+  .main-content {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /* カードが画面からはみ出さないようにする */
+  .card {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* ボタン・入力欄 */
+  input,
+  textarea,
+  select,
+  button {
+    max-width: 100%;
+  }
+
+  /* 検索欄など */
+  .search-row {
+    min-width: 0;
+  }
+
+  .search-row input {
+    min-width: 0;
+  }
+
+  /* チャット */
+  .chat-layout {
+    min-width: 0;
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .chat-sidebar,
+  .chat-window {
+    min-width: 0;
+  }
+
+  .messages {
+    min-width: 0;
+  }
+
+  .message {
+    max-width: 85%;
+    overflow-wrap: anywhere;
+  }
+
+  /* チャット入力 */
+  .chat-input {
+    min-width: 0;
+  }
+
+  .chat-input textarea {
+    min-width: 0;
+  }
+}
+
+
+/* =========================================
+   小さいスマートフォン
+   ========================================= */
+
+@media (max-width: 520px) {
+
+  /* サイドバーを少しだけ細く */
+  .sidebar {
+    width: 190px;
+    min-width: 190px;
+  }
+
+  /* メイン部分 */
+  .content,
+  .main-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* チャット一覧を上に移動して縦型にする */
+  .chat-layout {
+    display: flex;
+    flex-direction: column;
+
+    height: auto;
+    min-height: calc(100vh - 120px);
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    max-height: 150px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .chat-window {
+    width: 100%;
+    min-height: 450px;
+  }
+
+  .chat-item {
+    flex-shrink: 0;
+  }
+
+  /* 入力欄 */
+  .chat-input {
+    gap: 6px;
+  }
+
+  .chat-input button {
+    flex-shrink: 0;
+  }
+}
+
+
+/* =========================================
+   極小画面
+   ========================================= */
+
+@media (max-width: 380px) {
+
+  .sidebar {
+    width: 165px;
+    min-width: 165px;
+  }
+
+  .content,
+  .main-content {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .chat-window {
+    min-height: 400px;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+}
+
+
+/* =========================================
+   タッチ端末
+   デザインは変更せず操作性だけ改善
+   ========================================= */
+
+@media (hover: none) {
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================
+   横向きスマホ
+   ========================================= */
+
+@media (max-width: 700px) and (orientation: landscape) {
+
+  .chat-window {
+    min-height: 300px;
+  }
+
+  .chat-layout {
+    min-height: calc(100vh - 90px);
+  }
+}
+
+/* オープンチャット専用ページ：既存のDistardカード／ボタンに合わせた統一デザイン */
+.open-chat-pagehead{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-bottom:20px;
+}
+.open-chat-pagehead h2{margin:0 0 6px}
+.open-chat-pagehead p{margin:0;line-height:1.5}
+.open-chat-create{width:auto!important;min-width:112px;padding:10px 16px!important;margin:0!important;border-radius:10px!important}
+.open-chat-panel{
+  background:#191d26;border:1px solid #2d3340;border-radius:14px;padding:18px;margin-bottom:16px;
+}
+.open-chat-panel-title{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.open-chat-panel-title strong{display:block;margin-bottom:4px}
+.open-chat-panel-icon{
+  display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:11px;
+  background:rgba(124,92,255,.16);border:1px solid rgba(124,92,255,.28);color:#c7b8ff;font-size:25px;
+}
+.open-chat-search-row{display:flex;align-items:stretch;gap:9px}
+.open-chat-search-row .search{flex:1;min-width:0;margin:0;height:44px}
+.open-chat-search-button{width:auto!important;min-width:88px;padding:0 18px!important;margin:0!important;border-radius:10px!important}
+.open-chat-results{display:grid;gap:9px;margin-top:12px}
+.open-chat-results:empty{display:none}
+.open-chat-results .listrow{
+  background:#20242e;border:1px solid #303644;border-radius:11px;padding:13px;
+}
+.open-chat-results .listrow button{border-radius:9px;padding:8px 14px;background:#292f3b;color:#eef1f7}
+.open-chat-results .listrow button.primary{background:#7c5cff;color:#fff}
+.open-chat-hint{margin-top:16px}
+.open-chat-hint p{line-height:1.6;margin:7px 0 12px}
+.open-chat-hint button{margin-top:4px}
+@media(max-width:520px){
+  .open-chat-panel{padding:14px}
+  .open-chat-pagehead{align-items:center}
+  .open-chat-create{min-width:92px;padding:9px 12px!important}
+  .open-chat-search-row{gap:7px}
+  .open-chat-search-button{min-width:72px;padding:0 12px!important}
+  .open-chat-results .listrow{align-items:flex-start!important}
+}
+
+.notification-enable{
+  width:100%;margin-top:8px;padding:9px 10px;border-radius:10px;
+  border:1px solid var(--line, rgba(255,255,255,.12));
+  background:rgba(255,255,255,.06);color:inherit;cursor:pointer;
+}
+.notification-enable:hover{background:rgba(255,255,255,.11)}
+
+
+
+/* スマホ用：image.pngから開く左スライドメニュー */
+/* スマホ版トーク一覧：チャットメニューのすぐ下に表示 */
+.mobile-talk-list-wrap { display: none; }
+.mobile-talk-list-title {
+  padding: 5px 10px 7px;
+  color: #858da0;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.mobile-talk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 32vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 2px 5px;
+}
+.mobile-talk-item {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  background: #1d212b !important;
+  color: #c4cad7 !important;
+  text-align: left;
+  display: block;
+}
+.mobile-talk-item:active,
+.mobile-talk-item:hover { background: #292e3b !important; }
+.mobile-talk-item.selected {
+  background: rgba(124,92,255,.18) !important;
+  border-color: rgba(124,92,255,.55) !important;
+  color: #fff !important;
+}
+.mobile-talk-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.mobile-talk-subtitle {
+  color: #858da0;
+  font-size: 11px;
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mobile-talk-empty { padding: 8px 10px; color: #858da0; font-size: 12px; }
+@media (max-width: 650px) {
+  #app .mobile-talk-list-wrap { display: block; margin: -2px 0 4px 8px; padding-left: 9px; border-left: 1px solid #343947; }
+  #app .mobile-talk-list { max-height: 32vh; }
+}
+
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  margin: 0 10px 0 -7px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.mobile-menu-toggle img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.mobile-menu-toggle:active,
+.mobile-menu-toggle:focus-visible {
+  background: #292e39;
+  outline: 1px solid #7c5cff;
+}
+.mobile-menu-overlay {
+  display: none;
+}
+@media (max-width: 650px) {
+  #app { position: relative; overflow: hidden; }
+  #app .mobile-menu-toggle { display: inline-flex; }
+  #app .topbar { flex: 0 0 54px; height: 54px; padding: 0 14px; z-index: 5; }
+  #app .sidebar {
+    display: flex !important;
+    position: fixed;
+    z-index: 1002;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(285px, 82vw);
+    min-width: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    padding: 16px;
+    box-shadow: 18px 0 45px rgba(0,0,0,.38);
+    transform: translateX(-110%);
+    transition: transform .24s ease;
+    visibility: hidden;
+  }
+  #app.mobile-menu-open .sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  #app .mobile-menu-overlay {
+    display: block;
+    position: fixed;
+    z-index: 1001;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .24s ease, visibility .24s ease;
+  }
+  #app.mobile-menu-open .mobile-menu-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  #app .main { min-width: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .sidebar, #app .mobile-menu-overlay { transition: none; }
+}
+
+.conversation-action-btn{padding:7px 10px;border-radius:9px;background:#28243a;border:1px solid #494064;color:#e7e0ff;font-size:12px;transition:background .15s,border-color .15s}
+.conversation-action-btn:hover{background:#393052;border-color:#7c5cff}
+.conversation-action-btn.leave{background:#302329;border-color:#5c3a48;color:#ffc6d2}
+.conversation-action-btn.leave:hover{background:#492b38;border-color:#b85b78}
+
+
+
+
+/* 未読バッジ：赤丸＋白文字 */
+.unread-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#e53945;color:#fff!important;font-size:11px;font-weight:800;line-height:1;box-sizing:border-box;flex-shrink:0;}
+.unread-count-badge.dot-only{min-width:9px;width:9px;height:9px;padding:0;font-size:0;}
+.chatname-row{display:flex;align-items:center;gap:7px;min-width:0;}
+.chatname-row .chatname-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-unread-badge{margin-left:auto;}
+.mobile-talk-name{display:flex;align-items:center;gap:6px;min-width:0;}
+.mobile-talk-name .mobile-talk-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Theme selector: dark by default, optional black/white light theme */
+.theme-switch-btn{width:100%;margin-top:8px;padding:9px 12px;border-radius:10px;background:#292d3a;color:#edf0f7;border:1px solid #3b4050;text-align:left}
+body[data-theme="light"]{background:#f4f5f8;color:#171923}
+body[data-theme="light"] .left,body[data-theme="light"] aside.left,body[data-theme="light"] .sidebar{background:#fff!important;color:#171923!important;border-color:#d9dce5!important}
+body[data-theme="light"] .main,body[data-theme="light"] .content,body[data-theme="light"] .section{background:#f4f5f8!important;color:#171923!important}
+body[data-theme="light"] .right,body[data-theme="light"] aside.right{background:#fff!important;color:#171923!important;border-color:#d9dce5!important}
+body[data-theme="light"] .topbar{background:#fff!important;color:#171923!important;border-color:#d9dce5!important}
+body[data-theme="light"] .item,body[data-theme="light"] .card,body[data-theme="light"] .modalbox,body[data-theme="light"] .open-chat-panel,body[data-theme="light"] .listrow,body[data-theme="light"] .group-card,body[data-theme="light"] .chat-list-item{background:#fff!important;color:#171923!important;border-color:#dfe2e9!important}
+body[data-theme="light"] input,body[data-theme="light"] textarea,body[data-theme="light"] select{background:#fff!important;color:#171923!important;border-color:#cbd0dc!important}
+body[data-theme="light"] button:not(.primary):not(.primarybtn):not(.logout):not(.danger){background:#eceef4;color:#202331;border-color:#d8dce6}
+body[data-theme="light"] .nav button{color:#333747!important}
+body[data-theme="light"] .nav button.active{background:#e9e3ff!important;color:#5636c7!important}
+body[data-theme="light"] .muted,body[data-theme="light"] .mobile-talk-list-title,body[data-theme="light"] .mobile-talk-empty{color:#656b7a!important}
+body[data-theme="light"] .msg-bubble{background:#fff!important;color:#171923!important;border:1px solid #e0e2e9}
+body[data-theme="light"] .msg.mine .msg-bubble{background:#eee9ff!important;color:#211a38!important;border-color:#d7ccff!important}
+body[data-theme="light"] .message-actions button,body[data-theme="light"] .reaction-picker button,body[data-theme="light"] .reaction-chip{background:#eceef4!important;color:#242736!important}
+body[data-theme="light"] .theme-switch-btn{background:#f0f1f6!important;color:#202331!important;border-color:#d5d9e3!important}
+body[data-theme="light"] .mobile-menu{background:#fff!important;color:#171923!important}
+body[data-theme="light"] .mobile-menu-toggle{background:#fff!important;border-color:#d8dce6!important}
+body[data-theme="light"] .toast{background:#fff!important;color:#171923!important;border-color:#d8dce6!important}
+body[data-theme="light"] .presence-line{color:#5f6676}
+.message-actions .copy-message-btn{opacity:.68}
+.message-actions .copy-message-btn:hover{opacity:1}
+
+
+body[data-theme="light"] #app{background:#f4f5f8!important;color:#171923!important}
+body[data-theme="light"] .sidebar{background:#fff!important;color:#171923!important}
+body[data-theme="light"] .userbox{background:#f1f2f7!important;border:1px solid #dfe2e9!important}
+body[data-theme="light"] .account-switch,body[data-theme="light"] .notification-enable{background:#e7e9f0!important;color:#202331!important}
+body[data-theme="light"] .brand{color:#171923!important}
+body[data-theme="light"] .auth-card,body[data-theme="light"] #auth .card{background:#fff!important;color:#171923!important;border-color:#dfe2e9!important}
+body[data-theme="light"] #auth{background:radial-gradient(circle at 20% 20%,#e8e2ff 0,#f4f5f8 42%),#f4f5f8!important;color:#171923!important}
+body[data-theme="light"] .chat-area,body[data-theme="light"] #messages{background:#f4f5f8!important;color:#171923!important}
+body[data-theme="light"] .msg:not(.mine) .msg-bubble{background:#fff!important;color:#171923!important}
+body[data-theme="light"] .reply-preview{background:#f0f1f6!important;color:#44495a!important}
+
+
+/* Light-theme contrast pass: improve low-contrast labels, forms, dialogs and menus */
+body[data-theme="light"] #app,
+body[data-theme="light"] #app * { text-shadow: none; }
+body[data-theme="light"] #app h1,
+body[data-theme="light"] #app h2,
+body[data-theme="light"] #app h3,
+body[data-theme="light"] #app h4,
+body[data-theme="light"] #app label,
+body[data-theme="light"] #app .title,
+body[data-theme="light"] #app .chat-title,
+body[data-theme="light"] #app .conversation-title,
+body[data-theme="light"] #app .username,
+body[data-theme="light"] #app .display-name,
+body[data-theme="light"] #app .message-text,
+body[data-theme="light"] #app .section-title,
+body[data-theme="light"] #app .modal-title,
+body[data-theme="light"] #app .open-chat-title,
+body[data-theme="light"] #app .group-name,
+body[data-theme="light"] #app .chat-list-item strong,
+body[data-theme="light"] #app .item strong,
+body[data-theme="light"] #app .card strong { color:#171923!important; }
+body[data-theme="light"] #app p,
+body[data-theme="light"] #app small,
+body[data-theme="light"] #app .description,
+body[data-theme="light"] #app .subtitle,
+body[data-theme="light"] #app .secondary-text,
+body[data-theme="light"] #app .timestamp,
+body[data-theme="light"] #app .message-time,
+body[data-theme="light"] #app .hint,
+body[data-theme="light"] #app .empty-state,
+body[data-theme="light"] #app .member-id,
+body[data-theme="light"] #app .chat-preview { color:#555c6d!important; }
+body[data-theme="light"] #app input,
+body[data-theme="light"] #app textarea,
+body[data-theme="light"] #app select,
+body[data-theme="light"] #app option { color:#171923!important; background-color:#fff!important; }
+body[data-theme="light"] #app input::placeholder,
+body[data-theme="light"] #app textarea::placeholder { color:#73798a!important; opacity:1!important; }
+body[data-theme="light"] #app input:focus,
+body[data-theme="light"] #app textarea:focus,
+body[data-theme="light"] #app select:focus { border-color:#7352df!important; outline:2px solid #7352df33!important; }
+body[data-theme="light"] #app button { color:#252838; }
+body[data-theme="light"] #app button.primary,
+body[data-theme="light"] #app button.primarybtn,
+body[data-theme="light"] #app .primary,
+body[data-theme="light"] #app .primarybtn { background:#6844d6!important; color:#fff!important; border-color:#6844d6!important; }
+body[data-theme="light"] #app button.danger,
+body[data-theme="light"] #app .danger,
+body[data-theme="light"] #app .leave { background:#fff0f2!important; color:#9b233b!important; border-color:#e7aab5!important; }
+body[data-theme="light"] #app .modal,
+body[data-theme="light"] #app .modal-content,
+body[data-theme="light"] #app .modalbox,
+body[data-theme="light"] #app .dialog,
+body[data-theme="light"] #app .dropdown-menu,
+body[data-theme="light"] #app .popover,
+body[data-theme="light"] #app .mobile-menu { background:#fff!important; color:#171923!important; border-color:#d7dbe5!important; }
+body[data-theme="light"] #app .nav button:hover,
+body[data-theme="light"] #app .chat-list-item:hover,
+body[data-theme="light"] #app .item:hover { background:#f0edff!important; color:#382477!important; }
+body[data-theme="light"] #app .nav button.active,
+body[data-theme="light"] #app .chat-list-item.active,
+body[data-theme="light"] #app .item.active { background:#e9e3ff!important; color:#4d2bb5!important; border-color:#c9baff!important; }
+body[data-theme="light"] #app .badge,
+body[data-theme="light"] #app .pill,
+body[data-theme="light"] #app .status-badge { background:#ece8ff!important; color:#4e32a8!important; border-color:#d2c6ff!important; }
+body[data-theme="light"] #app .online,
+body[data-theme="light"] #app .status-online { color:#087443!important; }
+body[data-theme="light"] #app .offline,
+body[data-theme="light"] #app .status-offline { color:#5f6676!important; }
+body[data-theme="light"] #app .message-actions button,
+body[data-theme="light"] #app .reaction-picker button,
+body[data-theme="light"] #app .reaction-chip,
+body[data-theme="light"] #app .conversation-action-btn { background:#f0f1f6!important; color:#242736!important; border-color:#d5d9e3!important; }
+body[data-theme="light"] #app .msg.mine .msg-bubble { background:#e9e2ff!important; color:#211a38!important; border-color:#c9baff!important; }
+body[data-theme="light"] #app .msg:not(.mine) .msg-bubble { background:#fff!important; color:#171923!important; border-color:#d8dce6!important; }
+body[data-theme="light"] #app .reply-preview { background:#f0f1f6!important; color:#34394a!important; border-color:#d8dce6!important; }
+body[data-theme="light"] #app :disabled { opacity:.65; }
+body[data-theme="light"] #app a { color:#5636c7!important; }
+body[data-theme="light"] #app hr { border-color:#dfe2e9!important; }
+
+
+
+/* Screenshot follow-up: fix remaining dark chat header and selected conversation in light theme */
+body[data-theme="light"] #app .chathead {
+  background: #ffffff !important;
+  color: #171923 !important;
+  border-bottom: 1px solid #d9dce5 !important;
+}
+body[data-theme="light"] #app .chathead .muted,
+body[data-theme="light"] #app .chathead .presence-line {
+  color: #555c6d !important;
+}
+body[data-theme="light"] #app .chathead .presence-dot {
+  border-color: #ffffff;
+}
+body[data-theme="light"] #app .chat-list {
+  background: #f4f5f8 !important;
+  border-right-color: #d9dce5 !important;
+}
+body[data-theme="light"] #app .chatitem,
+body[data-theme="light"] #app .chatitem .chatname {
+  color: #202331 !important;
+}
+body[data-theme="light"] #app .chatitem .chatpreview {
+  color: #62697a !important;
+}
+body[data-theme="light"] #app .chatitem:hover {
+  background: #e9eaf1 !important;
+}
+body[data-theme="light"] #app .chatitem.sel {
+  background: #e9e3ff !important;
+  color: #3d287d !important;
+  outline: 1px solid #c9baff;
+}
+body[data-theme="light"] #app .chatitem.sel .chatname {
+  color: #3d287d !important;
+}
+body[data-theme="light"] #app .chatitem.sel .chatpreview {
+  color: #5c4a91 !important;
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     AUTH
+===================================================== -->
+
+<div id="auth">
+
+  <div class="card">
+
+    <div class="logo">
+      Sta<span>cord</span>
+    </div>
+
+    <div class="muted">
+      IDでつながる、Distard。
+    </div>
+
+    <div class="tabs">
+
+      <button
+        type="button"
+        id="loginTab"
+        class="active"
+        onclick="switchAuthMode(false)"
+      >
+        ログイン
+      </button>
+
+      <button
+        type="button"
+        id="registerTab"
+        onclick="switchAuthMode(true)"
+      >
+        新規登録
+      </button>
+
+    </div>
+
+    <form id="authForm">
+
+      <div class="field">
+
+        <label>
+          Distard ID
+        </label>
+
+        <input
+          id="authId"
+          required
+          minlength="3"
+          maxlength="20"
+          autocomplete="username"
+          placeholder="例: star_user"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          パスワード
+        </label>
+
+        <input
+          id="authPw"
+          type="password"
+          required
+          minlength="6"
+          autocomplete="current-password"
+          placeholder="6文字以上"
+        >
+
+      </div>
+
+      <div
+        id="displayWrap"
+        class="field hidden"
+      >
+
+        <label>
+          表示名
+        </label>
+
+        <input
+          id="displayName"
+          maxlength="30"
+          placeholder="画面に表示する名前"
+        >
+
+      </div>
+
+      <button
+        type="submit"
+        class="primary"
+        id="authBtn"
+      >
+        ログイン
+      </button>
+
+      <div
+        id="authError"
+        class="error"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<div
+  id="app"
+  class="hidden"
+>
+
+  <div id="mobileMenuOverlay" class="mobile-menu-overlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
+
+  <aside class="sidebar" id="mainSidebar">
+
+    <div class="brand">
+      Sta<b>cord</b>
+    </div>
+
+    <div class="nav">
+
+      <button
+        data-section="home"
+        class="active"
+      >
+        ⌂ ホーム
+      </button>
+
+      <button data-section="friends">
+        ♙ フレンド
+      </button>
+
+      <button data-section="requests">
+        ✉ 申請
+      </button>
+
+      <button data-section="chats" id="chatsNavButton">
+        ▣ チャット <span id="chatsNavUnread" class="unread-count-badge nav-unread-badge dot-only hidden" aria-label="未読あり"></span>
+      </button>
+
+      <!-- スマホ版：チャットメニュー直下のトーク一覧 -->
+      <div class="mobile-talk-list-wrap" id="mobileTalkListWrap">
+        <div class="mobile-talk-list-title">トーク一覧</div>
+        <div id="mobileTalkList" class="mobile-talk-list">
+          <div class="mobile-talk-empty">トークを読み込み中...</div>
+        </div>
+      </div>
+
+      <button data-section="open-chats">
+        ◉ オープンチャット
+      </button>
+
+      <button data-section="admin" id="adminNav" class="hidden">
+        ⚙ 管理者
+      </button>
+
+    </div>
+
+    <div class="userbox">
+
+      <div class="userrow">
+
+        <div class="usertext">
+
+          <div
+            class="avatar"
+            id="myAvatar"
+          >
+            S
+          </div>
+
+          <div>
+
+            <b id="myName">-</b>
+
+            <div
+              class="muted"
+              id="myId"
+            >
+              @-
+            </div>
+
+          </div>
+
+        </div>
+
+        <button
+          class="logout"
+          id="logout"
+          title="ログアウト"
+        >
+          ↪
+        </button>
+
+      </div>
+
+      <button
+        class="account-switch"
+        onclick="openAccountSwitcher()"
+      >
+        アカウント切替
+      </button>
+
+      <button type="button" id="themeSwitchBtn" class="theme-switch-btn" onclick="toggleTheme()">☀ 白テーマに切替</button>
+
+      <button type="button" id="enableNotifications" class="notification-enable" onclick="toggleNotifications()">🔔 通知を有効にする</button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div class="topbar" id="appTopbar">
+      <button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="メニューを開く" aria-expanded="false" onclick="toggleMobileMenu()">
+        <img src="image.png" alt="メニュー" />
+      </button>
+      <span id="topTitle">ホーム</span>
+    </div>
+
+    <div class="content">
+
+      <!-- HOME -->
+
+      <section
+        id="home"
+        class="section active"
+      >
+
+        <h2>
+          Distardへようこそ
+        </h2>
+
+        <div class="item">
+
+          <h3>
+            友達を追加
+          </h3>
+
+          <p>
+            Distard IDを入力してフレンド申請を送れます。
+          </p>
+
+          <button
+            class="primarybtn"
+            onclick="
+              showSection('friends');
+              setTimeout(
+                ()=>document.getElementById('friendId').focus(),
+                50
+              )
+            "
+          >
+            IDで検索
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- FRIENDS -->
+
+      <section
+        id="friends"
+        class="section"
+      >
+
+        <h2>
+          フレンド
+        </h2>
+
+        <div
+          class="item"
+          style="margin-bottom:15px"
+        >
+
+          <input
+            class="search"
+            id="friendId"
+            placeholder="username / Distard ID"
+            autocomplete="off"
+            onkeydown="if(event.key === 'Enter'){ event.preventDefault(); searchFriendUser(); }"
+          >
+
+          <button
+            class="primarybtn"
+            onclick="searchFriendUser()"
+          >
+            ユーザーを検索
+          </button>
+
+          <div
+            id="friendSearchResult"
+            style="margin-top:12px"
+          ></div>
+
+          <div
+            class="error"
+            id="friendError"
+          ></div>
+
+        </div>
+
+        <div
+          id="friendsList"
+          class="grid"
+        ></div>
+
+      </section>
+
+
+      <!-- REQUESTS -->
+
+      <section
+        id="requests"
+        class="section"
+      >
+
+        <h2>
+          フレンド申請
+        </h2>
+
+        <div
+          id="requestList"
+          class="grid"
+        ></div>
+
+      </section>
+
+
+      <!-- OPEN CHATS -->
+      <section id="open-chats" class="section">
+        <div class="open-chat-pagehead">
+          <div>
+            <h2>オープンチャット</h2>
+            <p class="muted">IDでチャットを探したり、自分で新しい部屋を作成できます。</p>
+          </div>
+          <button type="button" class="primarybtn open-chat-create" onclick="openCreateOpenChatModal()">＋ 作成</button>
+        </div>
+
+        <div class="open-chat-panel">
+          <div class="open-chat-panel-title">
+            <span class="open-chat-panel-icon">⌕</span>
+            <div>
+              <strong>キーワード・IDでオープンチャットを検索</strong>
+              <div class="muted small">共有された8文字のIDを入力してください。</div>
+            </div>
+          </div>
+          <div class="open-chat-search-row">
+            <input id="openChatSearchId" class="search" placeholder="名前・説明のキーワード、またはID（例：A1B2C3D4）" maxlength="8" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter'){event.preventDefault();searchOpenChat()}">
+            <button type="button" class="primarybtn open-chat-search-button" onclick="searchOpenChat()">検索</button>
+          </div>
+          <div id="openChatSearchResults" class="open-chat-results"></div>
+        </div>
+
+        <div class="open-chat-hint item">
+          <strong>オープンチャットについて</strong>
+          <p>作成すると専用IDが発行されます。IDを共有すれば、ほかのユーザーが検索して参加できます。</p>
+          <button type="button" class="primarybtn" onclick="openCreateOpenChatModal()">オープンチャットを作成</button>
+        </div>
+      </section>
+
+
+      <!-- CHATS -->
+
+      <section
+        id="chats"
+        class="section"
+        style="padding:0;margin:-22px"
+      >
+
+        <div class="chat-layout">
+
+          <div
+            class="chat-list"
+            id="chatList"
+          ></div>
+
+          <div class="chat">
+
+            <div
+              class="chathead"
+              id="chatHead"
+            >
+              チャットを選択してください
+            </div>
+
+            <div
+              class="messages"
+              id="messages"
+            ></div>
+
+            <div class="typing-indicator" id="typingIndicator" aria-live="polite">
+              <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span id="typingIndicatorText">入力中...</span>
+            </div>
+
+            <div class="replying-banner" id="replyingBanner">
+              <span id="replyingText">返信先を選択中</span>
+              <button type="button" onclick="cancelReply()" aria-label="返信をキャンセル">×</button>
+            </div>
+
+            <div class="composer">
+
+              <input
+                id="messageInput"
+                placeholder="メッセージ..."
+                disabled
+              >
+
+              <button
+                id="sendMsg"
+                disabled
+              >
+                送信
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ADMIN -->
+      <section id="admin" class="section" style="padding:0">
+        <h2>管理者パネル</h2>
+        <div class="item" style="margin-bottom:15px">
+          <p>アカウントの一覧、BAN、BAN解除を管理できます。</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+            <button class="primarybtn" onclick="loadAdminUsers()">全ユーザー</button>
+            <button onclick="loadAdminBans()">BAN一覧</button>
+          </div>
+          <input id="adminSearch" class="search" style="margin-top:12px" placeholder="ID・表示名で検索" oninput="filterAdminUsers()">
+          <div id="adminStatus" class="muted" style="margin-top:8px"></div>
+        </div>
+        <div id="adminUsers" class="grid"></div>
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- RIGHT -->
+
+  <aside class="right">
+
+    <h3>
+      グループチャット
+    </h3>
+
+    <button
+      class="primary"
+      onclick="openGroupModal()"
+    >
+      ＋ グループを作成
+    </button>
+
+    <div id="groupList"></div>
+
+  </aside>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+  id="modal"
+  class="modal hidden"
+>
+
+  <div
+    class="modalbox"
+    id="modalBox"
+  ></div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast hidden"
+></div>
+
+
+<script>
+
+/* =====================================================
+   設定
+===================================================== */
+
+const SUPABASE_URL =
+  "https://ftmsywsapyxoakiezhjl.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_0rswfUUX0fN26G1Z7uWe9Q_aeCAaeS9";
+
+const AUTH_FUNCTION =
+  "https://ftmsywsapyxoakiezhjl.supabase.co/functions/v1/smart-service";
+
+
+const API_FUNCTION =
+  "https://ftmsywsapyxoakiezhjl.supabase.co/functions/v1/smooth-worker";
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let sessionToken = null;
+let account = null;
+let currentConversation = null;
+
+let conversationsCache = [];
+let profilesCache = {};
+
+let syncTimer = null;
+let messageTimer = null;
+let presenceTimer = null;
+let typingPollTimer = null;
+let typingStopTimer = null;
+let lastTypingSentAt = 0;
+let typingConversationId = null;
+let replyingToMessage = null;
+let notificationTimer = null;
+let notificationInitialized = false;
+let notificationsEnabled = (() => { try { return localStorage.getItem("stacord_notifications_enabled") !== "false"; } catch { return true; } })();
+const seenNotificationMessageIds = new Set();
+const seenNotificationRequestIds = new Set();
+
+let registerMode = false;
+let isAdmin = false;
+let adminUsersCache = [];
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* =====================================================
+   SAFE
+===================================================== */
+
+function safe(value){
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      m => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+      }[m])
+    );
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer = null;
+
+function toast(message){
+
+  $("toast").textContent =
+    message;
+
+  $("toast")
+    .classList
+    .remove("hidden");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(
+      () =>
+        $("toast")
+          .classList
+          .add("hidden"),
+      2600
+    );
+
+}
+
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+const TOKEN_KEY =
+  "stacord_session_token";
+
+const ACCOUNTS_KEY =
+  "stacord_saved_accounts";
+
+
+function getSavedAccounts(){
+
+  try{
+
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          ACCOUNTS_KEY
+        ) || "[]"
+      );
+
+    return Array.isArray(data)
+      ? data
+      : [];
+
+  }catch{
+
+    return [];
+
+  }
+
+}
+
+
+function saveAccountShortcut(acc){
+
+  if(!acc?.user_id)
+    return;
+
+  const list =
+    getSavedAccounts()
+      .filter(
+        x =>
+          x.user_id !==
+          acc.user_id
+      );
+
+  list.unshift({
+    user_id:
+      acc.user_id,
+
+    display_name:
+      acc.display_name ||
+      acc.user_id
+  });
+
+  localStorage.setItem(
+    ACCOUNTS_KEY,
+    JSON.stringify(
+      list.slice(0,10)
+    )
+  );
+
+}
+
+
+function removeCurrentShortcut(){
+
+  if(!account?.user_id)
+    return;
+
+  const list =
+    getSavedAccounts()
+      .filter(
+        x =>
+          x.user_id !==
+          account.user_id
+      );
+
+  localStorage.setItem(
+    ACCOUNTS_KEY,
+    JSON.stringify(list)
+  );
+
+}
+
+
+/* =====================================================
+   AUTH MODE
+===================================================== */
+
+function switchAuthMode(register){
+
+  registerMode =
+    !!register;
+
+  $("loginTab")
+    .classList
+    .toggle(
+      "active",
+      !registerMode
+    );
+
+  $("registerTab")
+    .classList
+    .toggle(
+      "active",
+      registerMode
+    );
+
+  $("displayWrap")
+    .classList
+    .toggle(
+      "hidden",
+      !registerMode
+    );
+
+  $("authBtn").textContent =
+    registerMode
+      ? "アカウントを作成"
+      : "ログイン";
+
+  $("authPw").autocomplete =
+    registerMode
+      ? "new-password"
+      : "current-password";
+
+  $("authError").textContent =
+    "";
+
+}
+
+
+/* =====================================================
+   ID CHECK
+===================================================== */
+
+function validId(id){
+
+  return /^[A-Za-z0-9_]{3,20}$/
+    .test(id);
+
+}
+
+
+/* =====================================================
+   API REQUEST
+===================================================== */
+
+async function api(action, data = {}){
+
+  if(!sessionToken){
+    throw new Error("ログインしてください。");
+  }
+
+  let response;
+
+  try{
+    response = await fetch(API_FUNCTION, {
+      method:"POST",
+      mode:"cors",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + sessionToken,
+        "apikey":SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({action, ...data})
+    });
+  }catch(error){
+    throw new Error("Distard APIに接続できませんでした: " + (error?.message || "通信エラー"));
+  }
+
+  let result = {};
+  const raw = await response.text();
+
+  try{
+    result = raw ? JSON.parse(raw) : {};
+  }catch{
+    result = { raw };
+  }
+
+  if(!response.ok){
+    const detail = result?.detail || result?.message || result?.raw || "";
+    throw new Error(
+      (result?.error || `APIエラー (${response.status})`) +
+      (detail ? "\n" + detail : "")
+    );
+  }
+
+  if(result?.error){
+    throw new Error(
+      result.error +
+      (result.detail ? "\n" + result.detail : "")
+    );
+  }
+
+  return result;
+}
+
+/* =====================================================
+   AUTH API
+===================================================== */
+
+async function authApi(action, data = {}) {
+  try {
+    const response = await fetch(AUTH_FUNCTION, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        action,
+        ...data
+      })
+    });
+
+    const text = await response.text();
+
+    let result;
+
+    try {
+      result = JSON.parse(text);
+    } catch {
+      throw new Error(
+        "サーバーから不正な応答が返されました。\n" +
+        "HTTP " + response.status + "\n\n" +
+        text
+      );
+    }
+
+    // 401、400、409など
+    // サーバーから返されたエラーをそのまま表示
+    if (!response.ok) {
+      throw new Error(
+        result.error ||
+        "認証エラー（HTTP " +
+        response.status +
+        "）"
+      );
+    }
+
+    return result;
+
+  } catch (error) {
+    console.error("Distard Auth:", error);
+
+    // fetchそのものが失敗した場合
+    if (
+      error instanceof TypeError &&
+      error.message.toLowerCase().includes("fetch")
+    ) {
+      throw new Error(
+        "Distard Authに接続できませんでした。\n\n" +
+        "URL:\n" +
+        AUTH_FUNCTION
+      );
+    }
+
+    // 認証エラーなど
+    throw error;
+  }
+}
+
+
+/* =====================================================
+   AUTH FORM
+===================================================== */
+
+$("authForm")
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      $("authError").textContent =
+        "";
+
+      const id =
+        $("authId")
+          .value
+          .trim()
+          .toLowerCase();
+
+      const pw =
+        $("authPw").value;
+
+      const display =
+        $("displayName")
+          .value
+          .trim() ||
+        id;
+
+
+      if(!validId(id)){
+
+        $("authError").textContent =
+          "IDは英数字と _ の3〜20文字で入力してください。";
+
+        return;
+
+      }
+
+
+      if(pw.length < 6){
+
+        $("authError").textContent =
+          "パスワードは6文字以上にしてください。";
+
+        return;
+
+      }
+
+
+      $("authBtn").disabled =
+        true;
+
+
+      $("authBtn").textContent =
+        registerMode
+          ? "登録中..."
+          : "ログイン中...";
+
+
+      try{
+
+        let result;
+
+
+        if(registerMode){
+
+          result =
+            await authApi(
+              "register",
+              {
+                user_id:id,
+                display_name:display,
+                password:pw
+              }
+            );
+
+        }else{
+
+          result =
+            await authApi(
+              "login",
+              {
+                user_id:id,
+                password:pw
+              }
+            );
+
+        }
+
+
+        /*
+          stacord-authの実装差に対応
+        */
+
+        const token =
+          result?.session_token ||
+          result?.token ||
+          result?.access_token;
+
+
+        const acc =
+          result?.account ||
+          result?.user ||
+          {
+            user_id:id,
+            display_name:
+              display
+          };
+
+
+        if(!token){
+
+          throw new Error(
+            "認証APIからセッションが返されませんでした。stacord-authのregister/loginがsession_tokenを返す設定か確認してください。"
+          );
+
+        }
+
+
+        sessionToken =
+          token;
+
+        account =
+          acc;
+
+
+        localStorage.setItem(
+          TOKEN_KEY,
+          sessionToken
+        );
+
+
+        saveAccountShortcut(
+          account
+        );
+
+
+        $("authId").value =
+          "";
+
+        $("authPw").value =
+          "";
+
+        $("displayName").value =
+          "";
+
+
+        await startApp();
+
+
+        toast(
+          registerMode
+            ? "アカウントを作成しました"
+            : "ログインしました"
+        );
+
+
+      }catch(error){
+
+        console.error(error);
+
+        $("authError").textContent =
+          error?.message ||
+          "認証に失敗しました。";
+
+      }finally{
+
+        $("authBtn").disabled =
+          false;
+
+        $("authBtn").textContent =
+          registerMode
+            ? "アカウントを作成"
+            : "ログイン";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   BROWSER NOTIFICATIONS
+===================================================== */
+
+function updateNotificationButton(){
+  const button = $("enableNotifications");
+  if(!button) return;
+  if(!('Notification' in window)){
+    button.textContent = notificationsEnabled ? "通知はこのブラウザーで利用できません" : "🔕 通知はオフです";
+    button.disabled = false;
+    return;
+  }
+  if(!notificationsEnabled){
+    button.textContent = "🔕 通知はオフ（クリックでオン）";
+    button.disabled = false;
+  }else if(Notification.permission === "granted"){
+    button.textContent = "🔔 通知はオン（クリックでオフ）";
+    button.disabled = false;
+  }else if(Notification.permission === "denied"){
+    button.textContent = "通知はブロック中（サイト設定を確認）";
+    button.disabled = false;
+  }else{
+    button.textContent = "🔔 通知を有効にする";
+    button.disabled = false;
+  }
+}
+
+function setNotificationsEnabled(enabled){
+  notificationsEnabled = Boolean(enabled);
+  try { localStorage.setItem("stacord_notifications_enabled", String(notificationsEnabled)); } catch {}
+  updateNotificationButton();
+  if(!notificationsEnabled){
+    toast("通知をオフにしました。未読バッジやメッセージは引き続き利用できます。");
+    return;
+  }
+  if(!('Notification' in window)){
+    toast("このブラウザーはデスクトップ通知に対応していません。");
+    return;
+  }
+  if(Notification.permission === "granted"){
+    if(!notificationInitialized){
+      checkNotifications(true).then(() => { notificationInitialized = true; });
+    }
+    startNotificationSync();
+    toast("通知をオンにしました。");
+  }else{
+    enableNotifications();
+  }
+}
+
+function toggleNotifications(){
+  setNotificationsEnabled(!notificationsEnabled);
+}
+
+async function enableNotifications(){
+  if(!('Notification' in window)){
+    toast("このブラウザーはデスクトップ通知に対応していません。");
+    updateNotificationButton();
+    return;
+  }
+  if(Notification.permission === "denied"){
+    toast("ブラウザーのサイト設定で通知を許可してください。");
+    updateNotificationButton();
+    return;
+  }
+  try{
+    const permission = Notification.permission === "granted"
+      ? "granted"
+      : await Notification.requestPermission();
+    if(permission !== "granted"){
+      notificationsEnabled = false;
+      try { localStorage.setItem("stacord_notifications_enabled", "false"); } catch {}
+      toast("通知が許可されていません。");
+      updateNotificationButton();
+      return;
+    }
+    notificationsEnabled = true;
+    try { localStorage.setItem("stacord_notifications_enabled", "true"); } catch {}
+    if(!notificationInitialized){
+      await checkNotifications(true);
+      notificationInitialized = true;
+    }
+    startNotificationSync();
+    updateNotificationButton();
+    toast("新着メッセージとフレンド申請の通知を有効にしました。");
+  }catch(error){
+    console.error("notification permission:", error);
+    toast("通知を有効にできませんでした。");
+  }
+}
+
+function showBrowserNotification(title, body, conversationId = null){
+  if(!notificationsEnabled || !('Notification' in window) || Notification.permission !== "granted") return;
+  // チャットを開いていてページも表示中なら、不要なデスクトップ通知は出さない
+  if(conversationId && currentConversation === conversationId && !document.hidden) return;
+  try{
+    const notice = new Notification(title, { body, tag: conversationId || title, renotify: false });
+    notice.onclick = () => {
+      window.focus();
+      notice.close();
+      if(conversationId){
+        showSection("chats");
+        selectConversation(conversationId);
+      }else{
+        showSection("requests");
+      }
+    };
+  }catch(error){ console.warn("Notification failed:", error); }
+}
+
+async function checkNotifications(silent = false){
+  if(!sessionToken || !account || !('Notification' in window) || Notification.permission !== "granted") return;
+  try{
+    const [conversationResult, requestResult] = await Promise.all([
+      api("conversations"),
+      api("requests")
+    ]);
+    const conversations = Array.isArray(conversationResult?.conversations) ? conversationResult.conversations : [];
+    const requests = Array.isArray(requestResult?.requests) ? requestResult.requests : [];
+
+    for(const request of requests){
+      const id = String(request.id || "");
+      if(!id) continue;
+      if(!seenNotificationRequestIds.has(id)){
+        seenNotificationRequestIds.add(id);
+        if(!silent && notificationsEnabled){
+          const sender = Array.isArray(request.stacord_accounts) ? request.stacord_accounts[0] : request.stacord_accounts;
+          showBrowserNotification("Distard · フレンド申請", `${sender?.display_name || sender?.user_id || "ユーザー"} から申請が届きました。`);
+          if(!document.hidden) toast("新しいフレンド申請が届きました。");
+        }
+      }
+    }
+
+    // 初回は既存のメッセージを通知せず、以降の新着だけ通知する
+    for(const conversation of conversations){
+      const result = await api("messages", { conversation_id: conversation.id });
+      const messages = Array.isArray(result?.messages) ? result.messages : [];
+      const otherMembers = (conversation.members || []).filter(member => member.id !== account.id);
+      const dmMember = otherMembers[0];
+      const conversationName = conversation.type === "group"
+        ? (conversation.name || "グループチャット")
+        : (dmMember?.display_name || dmMember?.user_id || "DM");
+      for(const message of messages){
+        const id = String(message.id || "");
+        if(!id) continue;
+        if(!seenNotificationMessageIds.has(id)){
+          seenNotificationMessageIds.add(id);
+          if(!silent && notificationsEnabled && !conversation.notifications_muted && message.sender_id !== account.id){
+            const senderName = message.sender?.display_name || message.sender?.user_id || conversationName;
+            const body = String(message.body || "新しいメッセージ");
+            showBrowserNotification(`Distard · ${senderName}`, body.slice(0, 180), conversation.id);
+            if(!document.hidden && currentConversation !== conversation.id){
+              toast(`${senderName} から新しいメッセージが届きました。`);
+            }
+          }
+        }
+      }
+    }
+  }catch(error){
+    console.error("notification check:", error);
+  }
+}
+
+function startNotificationSync(){
+  if(notificationTimer) clearInterval(notificationTimer);
+  if(!sessionToken || !('Notification' in window) || Notification.permission !== "granted") return;
+  notificationTimer = setInterval(() => checkNotifications(false), 12000);
+}
+
+function stopNotificationSync(){
+  if(notificationTimer){ clearInterval(notificationTimer); notificationTimer = null; }
+}
+
+updateNotificationButton();
+
+/* =====================================================
+   START APP
+===================================================== */
+
+async function startApp(){
+
+  if(!sessionToken)
+    return;
+
+
+  try{
+
+    const result =
+      await api("me");
+
+
+    if(result.account){
+
+      account =
+        result.account;
+
+    }
+
+    if(account?.is_banned){
+      const reason = account.ban_reason || "理由は指定されていません";
+      logoutLocal();
+      throw new Error("このアカウントはBANされています。\n理由: " + reason);
+    }
+
+    // 管理者パネルは管理者だけに表示
+    try{
+      const status = await api("admin_status");
+      isAdmin = status.is_admin === true;
+    }catch{
+      isAdmin = false;
+    }
+    $("adminNav").classList.toggle("hidden", !isAdmin);
+
+
+  }catch(error){
+
+    console.error(error);
+
+    logoutLocal();
+
+    $("authError").textContent =
+      error.message;
+
+    throw error;
+
+  }
+
+
+  $("auth")
+    .classList
+    .add("hidden");
+
+  $("app")
+    .classList
+    .remove("hidden");
+
+
+  updateUserUI();
+
+
+  await refreshAll();
+
+
+  startSync();
+  updateNotificationButton();
+  if('Notification' in window && Notification.permission === "granted"){
+    if(!notificationInitialized){
+      await checkNotifications(true);
+      notificationInitialized = true;
+    }
+    startNotificationSync();
+  }
+
+}
+
+
+/* =====================================================
+   USER UI
+===================================================== */
+
+function updateUserUI(){
+
+  if(!account)
+    return;
+
+  const name =
+    account.display_name ||
+    account.user_id ||
+    "Distard";
+
+  $("myName").textContent =
+    name;
+
+  $("myId").textContent =
+    "@" +
+    account.user_id;
+
+  $("myAvatar").textContent =
+    name
+      .charAt(0)
+      .toUpperCase();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+$("logout").onclick =
+  () => {
+
+    if(
+      !confirm(
+        "ログアウトしますか？"
+      )
+    ){
+
+      return;
+
+    }
+
+    logoutLocal();
+
+  };
+
+
+function logoutLocal(){
+
+  stopSync();
+  if(presenceTimer){ clearInterval(presenceTimer); presenceTimer = null; }
+  stopNotificationSync();
+  notificationInitialized = false;
+  seenNotificationMessageIds.clear();
+  seenNotificationRequestIds.clear();
+
+  sessionToken =
+    null;
+
+  account =
+    null;
+
+  isAdmin = false;
+  $("adminNav")?.classList.add("hidden");
+
+  currentConversation =
+    null;
+
+  conversationsCache =
+    [];
+
+  localStorage.removeItem(
+    TOKEN_KEY
+  );
+
+  $("app")
+    .classList
+    .add("hidden");
+
+  $("auth")
+    .classList
+    .remove("hidden");
+
+  $("messages").innerHTML =
+    "";
+
+  $("chatHead").textContent =
+    "チャットを選択してください";
+
+  $("messageInput").value =
+    "";
+
+  $("messageInput").disabled =
+    true;
+
+  $("sendMsg").disabled =
+    true;
+
+}
+
+
+/* =====================================================
+   ACCOUNT SWITCHER
+===================================================== */
+
+function openAccountSwitcher(){
+
+  const accounts =
+    getSavedAccounts();
+
+
+  let html = `
+
+<h3>
+  アカウント切替
+</h3>
+
+<div class="muted">
+  このブラウザに保存されているDistardアカウント
+</div>
+
+`;
+
+
+  if(!accounts.length){
+
+    html += `
+
+<div
+  class="muted"
+  style="margin:15px 0"
+>
+  保存されているアカウントはありません。
+</div>
+
+`;
+
+  }else{
+
+    html += accounts
+      .map(
+        acc => `
+
+<div
+  class="item"
+  style="margin-top:10px"
+>
+
+  <b>
+    ${safe(acc.display_name)}
+  </b>
+
+  <div class="muted">
+    @${safe(acc.user_id)}
+  </div>
+
+  <button
+    class="primarybtn"
+    onclick="switchAccount('${safe(acc.user_id)}')"
+  >
+    このアカウントへ切替
+  </button>
+
+</div>
+
+`
+      )
+      .join("");
+
+  }
+
+
+  html += `
+
+<button
+  class="primary"
+  onclick="logoutForAccountSwitch()"
+>
+  別のアカウントでログイン
+</button>
+
+<button
+  style="
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border-radius:10px;
+    background:#292f3b;
+    color:#fff;
+  "
+  onclick="closeModal()"
+>
+  閉じる
+</button>
+
+`;
+
+
+  $("modalBox").innerHTML =
+    html;
+
+  $("modal")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function logoutForAccountSwitch(){
+
+  closeModal();
+
+  logoutLocal();
+
+  toast(
+    "別のアカウントでログインできます"
+  );
+
+}
+
+
+async function switchAccount(userId){
+
+  /*
+    セッション方式では
+    パスワードを保存しないため、
+    保存済みアカウントを
+    自動ログインすることはしない。
+  */
+
+  closeModal();
+
+  logoutLocal();
+
+  switchAuthMode(false);
+
+  $("authId").value =
+    userId;
+
+  $("authPw").focus();
+
+  toast(
+    "パスワードを入力してください"
+  );
+
+}
+
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+function toggleMobileMenu(){
+  const app = $("app");
+  if(!app) return;
+  if(app.classList.contains("mobile-menu-open")) closeMobileMenu();
+  else {
+    app.classList.add("mobile-menu-open");
+    const toggle = $("mobileMenuToggle");
+    if(toggle){ toggle.setAttribute("aria-expanded", "true"); toggle.setAttribute("aria-label", "メニューを閉じる"); }
+  }
+}
+function closeMobileMenu(){
+  const app = $("app");
+  if(!app) return;
+  app.classList.remove("mobile-menu-open");
+  const toggle = $("mobileMenuToggle");
+  if(toggle){ toggle.setAttribute("aria-expanded", "false"); toggle.setAttribute("aria-label", "メニューを開く"); }
+}
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+function showSection(id){
+
+  document
+    .querySelectorAll(".section")
+    .forEach(
+      section =>
+        section.classList.remove(
+          "active"
+        )
+    );
+
+
+  const target =
+    $(id);
+
+  if(!target)
+    return;
+
+  closeMobileMenu();
+
+  target.classList.add(
+    "active"
+  );
+
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(
+      button =>
+        button.classList.toggle(
+          "active",
+          button.dataset.section ===
+            id
+        )
+    );
+
+
+  const titles = {
+
+    home:"ホーム",
+    friends:"フレンド",
+    requests:"フレンド申請",
+    chats:"チャット",
+    "open-chats":"オープンチャット",
+    admin:"管理者パネル"
+
+  };
+
+
+  $("topTitle").textContent =
+    titles[id] || id;
+
+
+  if(id === "friends")
+    loadFriends();
+
+  if(id === "requests")
+    loadRequests();
+
+  if(id === "chats")
+    loadConversations();
+
+  if(id === "open-chats") {
+    const searchInput = $("openChatSearchId");
+    if(searchInput) setTimeout(() => searchInput.focus({preventScroll:true}), 80);
+  }
+
+  if(id === "admin" && isAdmin)
+    loadAdminUsers();
+
+}
+
+
+document
+  .querySelectorAll(".nav button")
+  .forEach(
+    button => {
+
+      button.onclick =
+        () =>
+          showSection(
+            button.dataset.section
+          );
+
+    }
+  );
+
+
+/* =====================================================
+   SEND FRIEND REQUEST
+===================================================== */
+
+async function searchFriendUser(){
+
+  $("friendError").textContent = "";
+  $("friendSearchResult").innerHTML = "";
+
+  const id = $("friendId").value.trim().toLowerCase();
+
+  if(!id){
+    $("friendError").textContent = "username / Distard IDを入力してください。";
+    return;
+  }
+
+  if(!account){
+    $("friendError").textContent = "ログインしてください。";
+    return;
+  }
+
+  if(id === String(account.user_id).toLowerCase()){
+    $("friendError").textContent = "自分は検索できません。";
+    return;
+  }
+
+  $("friendSearchResult").innerHTML = '<div class="item"><div class="muted">検索中...</div></div>';
+
+  try{
+    const result = await api("find_account", { user_id:id });
+    const target = result?.account || result?.user || result?.data?.account || result?.data?.user || null;
+
+    if(!target){
+      $("friendSearchResult").innerHTML = "";
+      $("friendError").textContent = "そのusername / Distard IDのユーザーは見つかりません。";
+      return;
+    }
+
+    const targetUserId = target.user_id || target.username || id;
+    const targetId = target.id || target.account_id || targetUserId;
+
+    if(String(targetUserId).toLowerCase() === String(account.user_id).toLowerCase()){
+      $("friendSearchResult").innerHTML = "";
+      $("friendError").textContent = "自分は検索できません。";
+      return;
+    }
+
+    const name = target.display_name || target.username || targetUserId;
+    const safeTargetId = encodeURIComponent(String(targetId));
+    const safeTargetUserId = encodeURIComponent(String(targetUserId));
+
+    $("friendSearchResult").innerHTML = `
+      <div class="item">
+        <h3>${safe(name)}</h3>
+        <p>@${safe(targetUserId)}</p>
+        <button
+          class="primarybtn"
+          id="sendFriendResultButton"
+          data-target-id="${safeTargetId}"
+          data-target-user-id="${safeTargetUserId}"
+        >
+          ＋ フレンド申請
+        </button>
+      </div>
+    `;
+
+    $("sendFriendResultButton").onclick = () =>
+      sendRequestToUser(
+        decodeURIComponent($("sendFriendResultButton").dataset.targetId),
+        decodeURIComponent($("sendFriendResultButton").dataset.targetUserId)
+      );
+
+  }catch(error){
+    $("friendSearchResult").innerHTML = "";
+    $("friendError").textContent = error?.message || "ユーザー検索に失敗しました。";
+  }
+}
+
+async function sendRequestToUser(targetId, targetUserId){
+
+  $("friendError").textContent = "";
+
+  try{
+    await api("send_request", {
+      target_id:targetId,
+      user_id:targetUserId
+    });
+
+    $("friendSearchResult").innerHTML = `
+      <div class="item">
+        <h3>申請を送りました</h3>
+        <p>@${safe(targetUserId)} にフレンド申請を送りました。</p>
+      </div>
+    `;
+
+    $("friendId").value = "";
+    toast("フレンド申請を送りました");
+    await loadRequests();
+
+  }catch(error){
+    $("friendError").textContent = error?.message || "フレンド申請に失敗しました。";
+  }
+}
+
+async function sendRequest(){
+  await searchFriendUser();
+}
+
+
+/* =====================================================
+   FRIENDS
+===================================================== */
+
+async function loadFriends(){
+
+  if(!sessionToken)
+    return;
+
+
+  try{
+
+    const result =
+      await api("friends");
+
+
+    const friends =
+      result.friends ||
+      [];
+
+
+    $("friendsList").innerHTML =
+      friends.length
+        ? friends
+            .map(
+              friend => `
+
+<div class="item">
+
+  <h3>
+    ${safe(
+      friend.display_name ||
+      friend.user_id
+    )}
+  </h3>
+
+  <p>
+    @${safe(friend.user_id)}
+  </p>
+
+  <button
+    class="primarybtn"
+    onclick="startDM('${friend.id}')"
+  >
+    チャット
+  </button>
+
+  <button
+    onclick="blockUser('${friend.id}')"
+  >
+    ブロック
+  </button>
+
+  <button
+    class="dangerbtn"
+    onclick="removeFriend('${friend.id}')"
+  >
+    フレンド削除
+  </button>
+
+</div>
+
+`
+            )
+            .join("")
+        : `
+
+<div class="muted">
+  まだフレンドはいません。
+</div>
+
+`;
+
+  }catch(error){
+
+    console.error(error);
+
+    $("friendsList").innerHTML =
+      `
+<div class="error">
+  ${safe(error.message)}
+</div>
+`;
+
+  }
+
+}
+
+
+/* =====================================================
+   REQUESTS
+===================================================== */
+
+async function loadRequests(){
+
+  if(!sessionToken)
+    return;
+
+
+  try{
+
+    const result =
+      await api("requests");
+
+
+    const requests =
+      result.requests ||
+      [];
+
+
+    $("requestList").innerHTML =
+      requests.length
+        ? requests
+            .map(
+              request => {
+
+                const sender =
+                  Array.isArray(
+                    request.stacord_accounts
+                  )
+                    ? request
+                        .stacord_accounts[0]
+                    : request
+                        .stacord_accounts;
+
+
+                return `
+
+<div class="item">
+
+  <h3>
+    ${safe(
+      sender?.display_name ||
+      sender?.user_id ||
+      "Unknown"
+    )}
+  </h3>
+
+  <p>
+    @${safe(
+      sender?.user_id ||
+      ""
+    )}
+  </p>
+
+  <button
+    class="primarybtn"
+    onclick="acceptRequest('${request.id}')"
+  >
+    承認
+  </button>
+
+  <button
+    onclick="rejectRequest('${request.id}')"
+  >
+    拒否
+  </button>
+
+</div>
+
+`;
+
+              }
+            )
+            .join("")
+        : `
+
+<div class="muted">
+  新しい申請はありません。
+</div>
+
+`;
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =====================================================
+   ACCEPT
+===================================================== */
+
+async function acceptRequest(id){
+
+  try{
+
+    await api(
+      "accept_request",
+      {
+        request_id:id
+      }
+    );
+
+
+    toast(
+      "フレンドに追加しました"
+    );
+
+
+    await loadRequests();
+    await loadFriends();
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   REJECT
+===================================================== */
+
+async function rejectRequest(id){
+
+  try{
+
+    await api(
+      "reject_request",
+      {
+        request_id:id
+      }
+    );
+
+
+    await loadRequests();
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   REMOVE FRIEND
+===================================================== */
+
+async function removeFriend(id){
+
+  if(
+    !confirm(
+      "このユーザーをフレンドから削除しますか？"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    await api(
+      "remove_friend",
+      {
+        account_id:id
+      }
+    );
+
+
+    toast(
+      "フレンドから削除しました"
+    );
+
+
+    await loadFriends();
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   BLOCK
+===================================================== */
+
+async function blockUser(id){
+
+  if(
+    !confirm(
+      "このユーザーをブロックしますか？"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    await api(
+      "block",
+      {
+        account_id:id
+      }
+    );
+
+
+    toast(
+      "ブロックしました"
+    );
+
+
+    await loadFriends();
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   DM
+===================================================== */
+
+async function startDM(id){
+
+  try{
+
+    const result =
+      await api(
+        "create_dm",
+        {
+          account_id:id
+        }
+      );
+
+
+    const conversation =
+      result.conversation;
+
+
+    currentConversation =
+      conversation.id;
+
+
+    showSection("chats");
+
+    await loadConversations();
+
+    await selectConversation(
+      conversation.id
+    );
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CONVERSATIONS
+===================================================== */
+
+async function loadConversations(){
+
+  if(!sessionToken)
+    return;
+
+
+  try{
+
+    const result =
+      await api(
+        "conversations"
+      );
+
+
+    conversationsCache =
+      result.conversations ||
+      [];
+    const totalUnread = conversationsCache.reduce((sum, item) => sum + Math.max(0, Number(item.unread_count ?? item.unreadCount ?? 0) || 0), 0);
+    const navBadge = $("chatsNavUnread");
+    if (navBadge) {
+      navBadge.classList.toggle("hidden", totalUnread <= 0);
+      navBadge.classList.toggle("dot-only", totalUnread <= 0);
+      navBadge.textContent = totalUnread > 99 ? "99+" : String(totalUnread);
+      navBadge.setAttribute("aria-label", totalUnread > 0 ? `未読${totalUnread}件` : "未読なし");
+    }
+
+    // 選択中DMのオンライン表示も定期同期で更新する。
+    if(currentConversation){
+      const activeConversation = conversationsCache.find(x => x.id === currentConversation);
+      if(activeConversation && activeConversation.type !== "group"){
+        const other = (activeConversation.members || []).find(m => m.id !== account?.id);
+        const line = $("chatHead")?.querySelector(".presence-line");
+        if(line && other){
+          line.innerHTML = `<i class="presence-dot ${other.online ? "online" : ""}"></i>${other.online ? "オンライン" : "オフライン"}`;
+        }
+      }
+    }
+
+    const html =
+      [];
+
+
+    for(
+      const conversation
+      of conversationsCache
+    ){
+
+      const otherMembers = (conversation.members || []).filter(
+        member => member.id !== account?.id
+      );
+      const dmMember = otherMembers[0];
+      const name = conversation.type === "group"
+        ? (conversation.name || "グループ")
+        : (dmMember?.display_name || dmMember?.user_id || "DM");
+      const subtitle = conversation.type === "group"
+        ? `${(conversation.members || []).length}人のグループ`
+        : (dmMember?.user_id ? `@${dmMember.user_id}` : "ダイレクトメッセージ");
+      const presenceHtml = conversation.type !== "group" && dmMember
+        ? `<span class="chat-presence"><i class="presence-dot ${dmMember.online ? "online" : ""}"></i>${dmMember.online ? "オンライン" : "オフライン"}</span>`
+        : "";
+
+      const unreadCount = Math.max(0, Number(conversation.unread_count ?? conversation.unreadCount ?? 0) || 0);
+      const unreadBadge = unreadCount > 0 ? `<span class="unread-count-badge" aria-label="未読${unreadCount}件">${unreadCount > 99 ? "99+" : unreadCount}</span>` : "";
+      html.push(`
+<div class="chatitem ${currentConversation === conversation.id ? "sel" : ""}"
+  onclick="selectConversation('${conversation.id}')">
+  <div class="chatname-row">${unreadBadge}<div class="chatname chatname-text">${safe(name)}${presenceHtml}</div></div>
+  <div class="chatpreview">${safe(subtitle)}</div>
+</div>
+`);
+
+    }
+
+
+    $("chatList").innerHTML =
+      html.length
+        ? html.join("")
+        : `
+
+<div
+  class="muted"
+  style="padding:12px"
+>
+  まだチャットはありません。
+</div>
+
+`;
+
+    // スマホの左メニューにも同じトーク一覧を表示する。
+    const mobileTalkList = $("mobileTalkList");
+    if (mobileTalkList) {
+      const mobileHtml = conversationsCache.map(conversation => {
+        const otherMembers = (conversation.members || []).filter(member => member.id !== account?.id);
+        const dmMember = otherMembers[0];
+        const name = conversation.type === "group"
+          ? (conversation.name || "グループ")
+          : (dmMember?.display_name || dmMember?.user_id || "DM");
+        const subtitle = conversation.type === "group"
+          ? `${(conversation.members || []).length}人のグループ`
+          : (dmMember?.user_id ? `@${dmMember.user_id}` : "ダイレクトメッセージ");
+        const presence = conversation.type !== "group" && dmMember
+          ? `<i class="presence-dot ${dmMember.online ? "online" : ""}"></i>`
+          : "";
+        const unreadCount = Math.max(0, Number(conversation.unread_count ?? conversation.unreadCount ?? 0) || 0);
+        const unreadBadge = unreadCount > 0 ? `<span class="unread-count-badge" aria-label="未読${unreadCount}件">${unreadCount > 99 ? "99+" : unreadCount}</span>` : "";
+        return `<button type="button" class="mobile-talk-item ${currentConversation === conversation.id ? "selected" : ""}" onclick="openMobileTalk('${conversation.id}')"><span class="mobile-talk-name">${unreadBadge}${presence}<span class="mobile-talk-label">${safe(name)}</span></span><span class="mobile-talk-subtitle">${safe(subtitle)}</span></button>`;
+      });
+      mobileTalkList.innerHTML = mobileHtml.length
+        ? mobileHtml.join("")
+        : '<div class="mobile-talk-empty">まだトークはありません。</div>';
+    }
+
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* スマホのメニューからトークを開く */
+function openMobileTalk(id) {
+  showSection("chats");
+  closeMobileMenu();
+  selectConversation(id);
+}
+
+async function toggleConversationMute(conversationId){
+  const conversation = conversationsCache.find(item => String(item.id) === String(conversationId));
+  if(!conversation) return;
+  const nextMuted = !conversation.notifications_muted;
+  try{
+    await api("set_conversation_mute", { conversation_id: conversationId, muted: nextMuted });
+    conversation.notifications_muted = nextMuted;
+    if(String(currentConversation) === String(conversationId)){
+      await selectConversation(conversationId);
+    }else{
+      await loadConversations();
+    }
+    toast(nextMuted ? "このグループの通知をオフにしました。" : "このグループの通知をオンにしました。");
+  }catch(error){
+    toast(error?.message || "通知設定を変更できませんでした。");
+  }
+}
+
+async function leaveConversation(conversationId){
+  const conversation = conversationsCache.find(item => String(item.id) === String(conversationId));
+  if(!conversation) return;
+  const name = conversation.name || (conversation.is_open_chat ? "オープンチャット" : "グループチャット");
+  const kind = conversation.is_open_chat ? "オープンチャット" : "グループチャット";
+  if(!confirm(`「${name}」から退会しますか？\n退会すると、この${kind}のトーク一覧から削除されます。`)) return;
+  try{
+    await api("leave_conversation", { conversation_id: conversationId });
+    if(String(currentConversation) === String(conversationId)){
+      currentConversation = null;
+      stopTypingForConversation(conversationId);
+      if(messageTimer){ clearInterval(messageTimer); messageTimer = null; }
+      $("messages").innerHTML = "";
+      $("chatHead").textContent = "チャットを選択してください";
+      $("messageInput").value = "";
+      $("messageInput").disabled = true;
+      $("sendMsg").disabled = true;
+    }
+    await loadConversations();
+    toast(`${kind}から退会しました。`);
+  }catch(error){
+    toast(error?.message || "退会できませんでした。");
+  }
+}
+
+/* =====================================================
+   SELECT CHAT
+===================================================== */
+
+async function selectConversation(id){
+
+  const previousConversation = currentConversation;
+  if(previousConversation && previousConversation !== id) stopTypingForConversation(previousConversation);
+  currentConversation = id;
+  startTypingPolling();
+
+
+  await loadConversations();
+
+
+  const conversation =
+    conversationsCache
+      .find(
+        x =>
+          x.id === id
+      );
+
+
+  if(!conversation)
+    return;
+
+
+  if (conversation.type === "group") {
+    const members = conversation.members || [];
+    const openIdLine = conversation.is_open_chat && conversation.open_chat_id ? `<div class="muted" style="font-size:12px;margin-top:3px">オープンチャットID：<b>${safe(conversation.open_chat_id)}</b></div>` : "";
+    $("chatHead").innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div><div>${safe(conversation.name || "グループ")}</div><div class="muted" style="font-size:12px;margin-top:3px">${conversation.is_open_chat ? "オープンチャット" : "グループチャット"} · ${members.length}人</div>${openIdLine}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <button type="button" onclick="showConversationMembers('${conversation.id}')" style="padding:7px 10px;border-radius:9px">メンバー表示</button>
+          ${!conversation.is_open_chat ? `<button type="button" onclick="renameGroup('${conversation.id}')" style="padding:7px 10px;border-radius:9px">名前を変更</button>` : ""}
+          <button type="button" class="conversation-action-btn" onclick="toggleConversationMute('${conversation.id}')">${conversation.notifications_muted ? "🔕 通知オン" : "🔔 通知オフ"}</button>
+          <button type="button" class="conversation-action-btn leave" onclick="leaveConversation('${conversation.id}')">退会</button>
+        </div>
+      </div>`;
+  } else {
+    const otherMembers = (conversation.members || []).filter(member => member.id !== account?.id);
+    const dmMember = otherMembers[0];
+    const displayName = dmMember?.display_name || "DM相手";
+    const userId = dmMember?.user_id || "ID不明";
+    $("chatHead").innerHTML = `
+      <div><div>${safe(displayName)}</div><div class="muted" style="font-size:12px;margin-top:3px">@${safe(userId)}</div><div class="presence-line"><i class="presence-dot ${dmMember?.online ? "online" : ""}"></i>${dmMember?.online ? "オンライン" : "オフライン"}</div></div>`;
+  }
+
+  $("messageInput").disabled =
+    false;
+
+  $("sendMsg").disabled =
+    false;
+
+
+  await loadMessages();
+
+
+  startMessageSync();
+
+}
+
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+async function loadMessages(){
+  if(!sessionToken || !currentConversation) return;
+  try{
+    if(!document.hidden) {
+      try { await api("mark_read", { conversation_id: currentConversation }); }
+      catch(readError) { console.warn("mark_read:", readError); }
+    }
+    const result = await api("messages", { conversation_id: currentConversation });
+    const messages = Array.isArray(result?.messages) ? result.messages : [];
+    const box = $("messages");
+    if(!box) return;
+    const oldScroll = box.scrollTop;
+    const wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+    box.innerHTML = messages.map(message => {
+      const mine = message.sender_id === account?.id;
+      const messageId = String(message.id || "");
+      const senderName = mine ? "自分" : (message.sender?.display_name || message.sender?.user_id || "相手");
+      const reply = message.reply_to || null;
+      const reactionList = Array.isArray(message.reactions) ? message.reactions : [];
+      const reactionButtons = reactionList.map(r => `<button type="button" class="reaction-chip ${r.mine ? "mine" : ""}" onclick="toggleReaction('${messageId}','${safeAttr(r.emoji)}')" title="${Number(r.count)||0}人がリアクション">${safe(r.emoji)} ${Number(r.count)||0}</button>`).join("");
+      return `
+        <div class="msg ${mine ? "mine" : ""}" data-message-id="${safeAttr(messageId)}">
+          <div class="msg-bubble">
+            ${reply ? `<div class="reply-preview">↪ ${safe(reply.sender_name || "メッセージ")}：${safe(reply.body || "（送信取り消し）")}</div>` : ""}
+            <div class="msgbody" style="white-space:pre-wrap">${safe(message.body)}</div>
+            <small>${safe(senderName)} · ${safe(formatMessageTime(message.created_at))}${message.edited_at ? " · 編集済み" : ""}</small>
+          </div>
+          ${mine && Number(message.read_by_count) > 0 ? `<div class="read-receipt">既読${Number(message.other_member_count) > 1 ? ` ${Number(message.read_by_count)}` : ""}</div>` : ""}
+          ${reactionButtons ? `<div class="message-reactions">${reactionButtons}</div>` : ""}
+          <div class="message-actions">
+            <button type="button" onclick="replyToMessage('${messageId}')">返信</button>
+            <button type="button" onclick="toggleReactionPicker('${messageId}')">リアクション</button>
+            <button type="button" class="copy-message-btn" onclick="copyMessage('${messageId}')">コピー</button>
+            ${mine ? `<button type="button" onclick="editMessage('${messageId}')">編集</button><button type="button" class="danger" onclick="unsendMessage('${messageId}')">送信取消</button>` : ""}
+          </div>
+          <div class="reaction-picker" id="reactionPicker-${safeAttr(messageId)}" hidden>
+            ${["👍","❤️","😂","😮","😢","🎉"].map(emoji => `<button type="button" onclick="toggleReaction('${messageId}','${emoji}')" aria-label="${emoji}をリアクション">${emoji}</button>`).join("")}
+          </div>
+        </div>`;
+    }).join("");
+    if(wasBottom) box.scrollTop = box.scrollHeight; else box.scrollTop = oldScroll;
+  }catch(error){
+    console.error("loadMessages error:", error);
+    const box = $("messages");
+    if(box) box.innerHTML = `<div style="padding:20px;text-align:center;color:#ff8798;white-space:pre-wrap;">メッセージを読み込めませんでした。<br><br>${safe(error?.message || "不明なエラー")}</div>`;
+  }
+}
+
+function safeAttr(value){
+  return String(value ?? "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/'/g,"&#39;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function applyTheme(theme){
+  const normalized = theme === "light" ? "light" : "dark";
+  document.body.dataset.theme = normalized;
+  try { localStorage.setItem("stacord_theme", normalized); } catch {}
+  const button = $("themeSwitchBtn");
+  if(button) button.textContent = normalized === "dark" ? "☀ 白テーマに切替" : "☾ 黒テーマに切替";
+}
+function toggleTheme(){ applyTheme(document.body.dataset.theme === "light" ? "dark" : "light"); }
+try { document.body.dataset.theme = localStorage.getItem("stacord_theme") === "light" ? "light" : "dark"; } catch { document.body.dataset.theme = "dark"; }
+
+async function copyMessage(messageId){
+  const node = document.querySelector(`[data-message-id="${CSS.escape(String(messageId))}"]`);
+  const text = node?.querySelector(".msgbody")?.textContent || "";
+  if(!text){ toast("コピーするメッセージがありません。"); return; }
+  try{
+    if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); }
+    else {
+      const area = document.createElement("textarea"); area.value = text; area.style.position="fixed"; area.style.opacity="0"; document.body.appendChild(area); area.select();
+      const ok = document.execCommand("copy"); area.remove(); if(!ok) throw new Error("copy failed");
+    }
+    toast("メッセージをコピーしました。");
+  }catch{ toast("コピーできませんでした。ブラウザーの権限を確認してください。"); }
+}
+
+function replyToMessage(messageId){
+  const node = document.querySelector(`[data-message-id="${CSS.escape(String(messageId))}"]`);
+  if(!node) return;
+  const body = node.querySelector(".msgbody")?.textContent || "";
+  const name = node.querySelector("small")?.textContent?.split(" · ")[0] || "メッセージ";
+  replyingToMessage = { id: String(messageId), body, name };
+  $("replyingText").textContent = `返信先：${name} — ${body.slice(0,90)}`;
+  $("replyingBanner").classList.add("active");
+  $("messageInput").focus();
+}
+function cancelReply(){
+  replyingToMessage = null;
+  $("replyingBanner")?.classList.remove("active");
+}
+function toggleReactionPicker(messageId){
+  const picker = $("reactionPicker-" + messageId);
+  if(picker) picker.hidden = !picker.hidden;
+}
+async function toggleReaction(messageId, emoji){
+  try{
+    await api("toggle_reaction", { message_id: messageId, emoji });
+    await loadMessages();
+  }catch(error){
+    toast(error?.message || "リアクションを保存できませんでした。");
+  }
+}
+
+async function editMessage(messageId){
+  const result = await api("messages", { conversation_id: currentConversation });
+  const message = (result.messages || []).find(item => String(item.id) === String(messageId));
+  if (!message || message.sender_id !== account?.id) { toast("自分のメッセージだけ編集できます。"); return; }
+  const next = prompt("メッセージを編集", message.body || "");
+  if (next === null) return;
+  const body = next.trim();
+  if (!body) { toast("空のメッセージにはできません。"); return; }
+  if (body.length > 4000) { toast("メッセージは4000文字以内にしてください。"); return; }
+  try { await api("edit_message", { message_id: messageId, body }); await loadMessages(); toast("メッセージを編集しました。"); }
+  catch (error) { toast(error?.message || "メッセージを編集できませんでした。"); }
+}
+async function unsendMessage(messageId){
+  if (!confirm("このメッセージの送信を取り消しますか？相手の画面からも削除されます。")) return;
+  try { await api("unsend_message", { message_id: messageId }); await loadMessages(); await loadConversations(); toast("メッセージの送信を取り消しました。"); }
+  catch (error) { toast(error?.message || "送信を取り消せませんでした。"); }
+}
+
+function formatMessageTime(value){
+  if(!value) return "";
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString([], {
+    hour:"2-digit",
+    minute:"2-digit"
+  });
+}
+
+/* =====================================================
+   TYPING INDICATOR
+===================================================== */
+function showTypingIndicator(names){
+  const el = $("typingIndicator");
+  const text = $("typingIndicatorText");
+  if(!el || !text) return;
+  if(!names || !names.length){ el.classList.remove("active"); text.textContent = ""; return; }
+  text.textContent = names.length === 1 ? `${names[0]} が入力中...` : `${names.slice(0,2).join("、")}${names.length > 2 ? ` ほか${names.length-2}人` : ""} が入力中...`;
+  el.classList.add("active");
+}
+
+async function setMyTyping(isTyping, conversationId = currentConversation){
+  if(!sessionToken || !conversationId) return;
+  try { await api("typing_update", { conversation_id: conversationId, is_typing: !!isTyping }); }
+  catch(error) { console.debug("typing update:", error?.message || error); }
+}
+
+function handleTypingInput(){
+  const input = $("messageInput");
+  if(!input || !currentConversation || !sessionToken) return;
+  const conversationId = currentConversation;
+  if(!input.value.trim()){
+    clearTimeout(typingStopTimer);
+    setMyTyping(false, conversationId);
+    return;
+  }
+  const now = Date.now();
+  if(conversationId !== typingConversationId || now - lastTypingSentAt > 1800){
+    typingConversationId = conversationId;
+    lastTypingSentAt = now;
+    setMyTyping(true, conversationId);
+  }
+  clearTimeout(typingStopTimer);
+  typingStopTimer = setTimeout(() => setMyTyping(false, conversationId), 4500);
+}
+
+async function pollTypingStatus(){
+  if(!sessionToken || !currentConversation || document.hidden) return;
+  const conversationId = currentConversation;
+  try{
+    const result = await api("typing_status", { conversation_id: conversationId });
+    if(currentConversation !== conversationId) return;
+    showTypingIndicator(Array.isArray(result?.users) ? result.users.map(user => user.display_name || user.user_id || "相手") : []);
+  }catch(error){ console.debug("typing status:", error?.message || error); }
+}
+
+function startTypingPolling(){
+  if(typingPollTimer) clearInterval(typingPollTimer);
+  typingPollTimer = null;
+  showTypingIndicator([]);
+  if(!currentConversation) return;
+  pollTypingStatus();
+  typingPollTimer = setInterval(pollTypingStatus, 1800);
+}
+
+function stopTypingForConversation(conversationId){
+  clearTimeout(typingStopTimer);
+  typingStopTimer = null;
+  if(conversationId && sessionToken) setMyTyping(false, conversationId);
+  showTypingIndicator([]);
+}
+
+/* =====================================================
+   SEND MESSAGE
+===================================================== */
+
+async function sendMessage(){
+
+  if(!currentConversation || !sessionToken){
+    toast("チャットを選択してください。");
+    return;
+  }
+
+  const input = $("messageInput");
+  const button = $("sendMsg");
+  const original = input.value;
+  const value = original.trim();
+
+  if(!value) return;
+  clearTimeout(typingStopTimer);
+  setMyTyping(false, currentConversation);
+
+  try{
+    input.disabled = true;
+    if(button) button.disabled = true;
+
+    const result = await api("send_message", {
+      conversation_id: currentConversation,
+      body: value,
+      reply_to_message_id: replyingToMessage?.id || null
+    });
+
+    if(!result?.ok && !result?.message){
+      throw new Error("サーバーから送信成功の応答がありませんでした。");
+    }
+
+    input.value = "";
+    cancelReply();
+    await loadMessages();
+
+  }catch(error){
+    console.error("sendMessage error:", error);
+    input.value = original;
+    toast(error?.message || "メッセージを送信できませんでした。");
+  }finally{
+    input.disabled = false;
+    if(button) button.disabled = false;
+    input.focus();
+  }
+}
+
+
+$("messageInput").addEventListener("input", handleTypingInput);
+$("messageInput").addEventListener("blur", () => {
+  clearTimeout(typingStopTimer);
+  if(currentConversation) setMyTyping(false, currentConversation);
+});
+
+$("sendMsg")
+  .onclick =
+    sendMessage;
+
+
+$("messageInput")
+  .onkeydown =
+    event => {
+
+      if(
+        event.key ===
+          "Enter" &&
+        !event.shiftKey
+      ){
+
+        event.preventDefault();
+
+        sendMessage();
+
+      }
+
+    };
+
+
+/* =====================================================
+   OPEN CHAT: create/search/join/member list
+===================================================== */
+async function openCreateOpenChatModal(){
+  $("modalBox").innerHTML = `
+    <h3>オープンチャットを作成</h3>
+    <div class="field"><label>チャット名</label><input id="openChatName" maxlength="100" placeholder="例：StarOS雑談部屋"></div>
+    <div class="field"><label>説明（任意）</label><textarea id="openChatDescription" maxlength="300" rows="3" placeholder="どんなチャットか説明できます"></textarea></div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px"><input id="openChatRequireAuth" type="checkbox" style="width:auto" onchange="toggleOpenChatAuthFields()"> 参加時にパスワード認証を必要にする</label><div class="muted">オンにすると、参加する人は設定したパスワードの入力が必要です。</div></div>
+    <div class="field hidden" id="openChatPasswordField"><label>参加パスワード（6文字以上）</label><input id="openChatJoinPassword" type="password" minlength="6" maxlength="128" autocomplete="new-password" placeholder="参加用パスワード"></div>
+    <p class="muted">作成後に8文字のオープンチャットIDが発行されます。IDを共有すると他のユーザーが検索・参加できます。</p>
+    <button class="primary" onclick="createOpenChat()">作成する</button>
+    <button style="width:100%;margin-top:8px" onclick="closeModal()">キャンセル</button>`;
+  $("modal").classList.remove("hidden");
+}
+function toggleOpenChatAuthFields(){
+  const required = $("openChatRequireAuth")?.checked === true;
+  $("openChatPasswordField")?.classList.toggle("hidden", !required);
+}
+async function createOpenChat(){
+  const name = $("openChatName")?.value.trim() || "";
+  const description = $("openChatDescription")?.value.trim() || "";
+  const requires_auth = $("openChatRequireAuth")?.checked === true;
+  const join_password = $("openChatJoinPassword")?.value || "";
+  if(!name){ toast("チャット名を入力してください。"); return; }
+  if(requires_auth && join_password.length < 6){ toast("参加パスワードは6文字以上にしてください。"); return; }
+  try{
+    const result = await api("create_open_chat", {name, description, requires_auth, join_password});
+    closeModal();
+    await loadConversations(); await loadGroups();
+    showSection("chats");
+    if(result.conversation) await selectConversation(result.conversation.id);
+    toast(`作成しました。オープンチャットID：${result.open_chat_id || result.conversation?.open_chat_id || "確認してください"}`);
+  }catch(error){ toast(error.message || "オープンチャットを作成できませんでした。"); }
+}
+async function searchOpenChat(){
+  const input = $("openChatSearchId");
+  const query = (input?.value || "").trim();
+  const target = $("openChatSearchResults");
+  if(!query){ toast("キーワードまたはオープンチャットIDを入力してください。"); return; }
+  target.innerHTML = `<div class="muted">検索中...</div>`;
+  try{
+    const result = await api("search_open_chats", {query});
+    const chats = result.chats || [];
+    if(!chats.length){ target.innerHTML = `<div class="muted">「${safe(query)}」に一致するオープンチャットは見つかりませんでした。</div>`; return; }
+    target.innerHTML = chats.map(chat => `<div class="listrow" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div style="min-width:0;flex:1"><strong>${safe(chat.name || "オープンチャット")}</strong><div class="muted" style="font-size:12px">ID：${safe(chat.open_chat_id)} · メンバー ${Number(chat.member_count)||0}人</div>${chat.description ? `<div class="muted" style="font-size:12px">${safe(chat.description)}</div>` : ""}${chat.requires_auth ? `<div class="muted" style="font-size:12px">🔒 参加パスワードが必要</div>` : ""}</div>${chat.joined ? `<button onclick="openFoundOpenChat('${chat.id}')">開く</button>` : `<button class="primary" onclick="joinOpenChat('${safe(chat.open_chat_id)}',${chat.requires_auth ? "true" : "false"})">参加</button>`}</div>`).join("");
+  }catch(error){ target.innerHTML = `<div class="muted">検索に失敗しました：${safe(error.message || "エラー")}</div>`; }
+}
+async function joinOpenChat(open_chat_id, requiresAuth = false){
+  let join_password = "";
+  if(requiresAuth){
+    join_password = prompt("このオープンチャットは参加パスワードが必要です。パスワードを入力してください。") || "";
+    if(!join_password) return;
+  }
+  try{
+    const result = await api("join_open_chat", {open_chat_id, join_password});
+    await loadConversations(); await loadGroups();
+    if(result.conversation) await selectConversation(result.conversation.id);
+    toast(result.already_joined ? "すでに参加しています。" : "オープンチャットに参加しました。");
+    await searchOpenChat();
+  }catch(error){ toast(error.message || "参加できませんでした。"); }
+}
+async function openFoundOpenChat(id){
+  await loadConversations();
+  const conversation = conversationsCache.find(x => x.id === id);
+  if(conversation){ await selectConversation(id); return; }
+  try{
+    const result = await api("join_open_chat", {open_chat_id: $("openChatSearchId")?.value.trim().toUpperCase()});
+    await loadConversations();
+    if(result.conversation) await selectConversation(result.conversation.id);
+  }catch(error){ toast(error.message || "チャットを開けませんでした。"); }
+}
+async function showConversationMembers(conversationId){
+  try{
+    const result = await api("open_chat_members", {conversation_id: conversationId});
+    const members = result.members || [];
+    const canManage = !!result.can_manage && !!result.is_open_chat;
+    const rows = members.map(member => {
+      const leader = member.role === "leader";
+      const controls = canManage && member.id !== account?.id ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">${leader ? `<button onclick="changeOpenChatRole('${conversationId}','${member.id}','member')">リーダー権限を剥奪</button>` : `<button onclick="changeOpenChatRole('${conversationId}','${member.id}','leader')">リーダーにする</button>`}<button class="danger" onclick="removeOpenChatMember('${conversationId}','${member.id}')">メンバー削除</button></div>` : "";
+      return `<div class="listrow" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><i class="presence-dot ${member.online ? "online" : ""}"></i><div style="min-width:0"><div>${safe(member.display_name || member.user_id || "ユーザー")}${member.id === account?.id ? "（あなた）" : ""} ${leader ? `<span class="badge">リーダー</span>` : ""}</div><div class="muted" style="font-size:12px">@${safe(member.user_id || "ID不明")} · ${member.online ? "オンライン" : "オフライン"}</div></div>${controls}</div>`;
+    }).join("");
+    const auth = canManage ? `<div class="listrow"><strong>入会時のパスワード認証</strong><p class="muted">${result.requires_auth ? "現在オンです" : "現在オフです"}</p><button onclick="toggleOpenChatAuth('${conversationId}',${result.requires_auth ? "false" : "true"})">${result.requires_auth ? "認証をオフにする" : "認証をオンにする"}</button></div>` : "";
+    $("modalBox").innerHTML = `<h3>オープンチャットメンバー（${members.length}人）</h3>${auth}<div style="max-height:55vh;overflow:auto">${rows || `<div class="muted">メンバーはいません。</div>`}</div><button style="width:100%;margin-top:12px" onclick="closeModal()">閉じる</button>`;
+    $("modal").classList.remove("hidden");
+  }catch(error){ toast(error.message || "メンバーを取得できませんでした。"); }
+}
+async function changeOpenChatRole(conversationId, memberId, role){
+  const actionText = role === "leader" ? "リーダー権限を譲渡" : "リーダー権限を剥奪";
+  if(!confirm(`${actionText}しますか？`)) return;
+  try{ await api("manage_open_chat_member", {conversation_id:conversationId, member_id:memberId, operation:role === "leader" ? "transfer_leader" : "revoke_leader"}); toast("権限を更新しました。"); await showConversationMembers(conversationId); }
+  catch(e){ toast(e.message || "権限を更新できませんでした。"); }
+}
+async function removeOpenChatMember(conversationId, memberId){
+  if(!confirm("このメンバーをオープンチャットから削除しますか？")) return;
+  try{ await api("manage_open_chat_member", {conversation_id:conversationId, member_id:memberId, operation:"remove_member"}); toast("メンバーを削除しました。"); await showConversationMembers(conversationId); await loadConversations(); }
+  catch(e){ toast(e.message || "メンバーを削除できませんでした。"); }
+}
+async function toggleOpenChatAuth(conversationId, requires_auth){
+  let join_password = "";
+  if(requires_auth){ join_password = prompt("参加パスワードを設定してください（6文字以上）") || ""; if(join_password.length < 6){ toast("パスワードは6文字以上にしてください。"); return; } }
+  if(!confirm(`入会時の認証を${requires_auth ? "オン" : "オフ"}にしますか？`)) return;
+  try{ await api("manage_open_chat_member", {conversation_id:conversationId, operation:"set_auth", requires_auth, join_password}); toast("認証設定を更新しました。"); await showConversationMembers(conversationId); }
+  catch(e){ toast(e.message || "認証設定を更新できませんでした。"); }
+}
+
+/* =====================================================
+   GROUP NAME EDIT
+===================================================== */
+
+async function renameGroup(conversationId){
+  const conversation = conversationsCache.find(item => item.id === conversationId);
+  if (!conversation || conversation.type !== "group") return;
+  const currentName = conversation.name || "グループ";
+  const nextName = prompt("新しいグループ名を入力してください", currentName);
+  if (nextName === null) return;
+  const name = nextName.trim();
+  if (!name) {
+    toast("グループ名を入力してください。");
+    return;
+  }
+  if (name.length > 100) {
+    toast("グループ名は100文字以内にしてください。");
+    return;
+  }
+  try {
+    await api("rename_group", { conversation_id: conversationId, name });
+    await loadConversations();
+    await loadGroups();
+    await selectConversation(conversationId);
+    toast("グループ名を変更しました。");
+  } catch (error) {
+    toast(error.message || "グループ名を変更できませんでした。");
+  }
+}
+
+/* =====================================================
+   GROUPS
+===================================================== */
+
+async function loadGroups(){
+
+  if(!sessionToken)
+    return;
+
+
+  try{
+
+    const result =
+      await api(
+        "groups"
+      );
+
+
+    const groups =
+      result.groups ||
+      [];
+
+
+    $("groupList").innerHTML =
+      groups.length
+        ? groups
+            .map(
+              group => `
+
+<div class="listrow">
+
+  <span>
+    ${safe(
+      group.name ||
+      "グループ"
+    )}${group.is_open_chat && group.open_chat_id ? `<div class="muted" style="font-size:11px">ID：${safe(group.open_chat_id)}</div>` : ""}
+  </span>
+
+  <button
+    onclick="
+      showSection('chats');
+      selectConversation(
+        '${group.id}'
+      )
+    "
+  >
+    開く
+  </button>
+
+</div>
+
+`
+            )
+            .join("")
+        : `
+
+<div
+  class="muted"
+  style="margin-top:12px"
+>
+  グループなし
+</div>
+
+`;
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =====================================================
+   GROUP MODAL
+===================================================== */
+
+async function openGroupModal(){
+
+  try{
+
+    const result =
+      await api(
+        "friends"
+      );
+
+
+    const friends =
+      result.friends ||
+      [];
+
+
+    $("modalBox").innerHTML = `
+
+<h3>
+  グループを作成
+</h3>
+
+<div class="field">
+
+  <label>
+    グループ名
+  </label>
+
+  <input
+    id="groupName"
+    placeholder="例：Star Friends"
+    maxlength="100"
+  >
+
+</div>
+
+<div class="muted">
+  参加メンバーを選択
+</div>
+
+<div
+  style="margin-top:10px"
+>
+
+${
+  friends.length
+    ? friends
+        .map(
+          friend => `
+
+<label class="memberpick">
+
+  <input
+    type="checkbox"
+    value="${safe(friend.id)}"
+  >
+
+  <span>
+    ${safe(
+      friend.display_name ||
+      friend.user_id
+    )}
+  </span>
+
+  <span class="muted">
+    @${safe(friend.user_id)}
+  </span>
+
+</label>
+
+`
+        )
+        .join("")
+    : `
+
+<div
+  class="muted"
+  style="margin-top:10px"
+>
+  参加できるフレンドがいません。
+</div>
+
+`
+}
+
+</div>
+
+<button
+  class="primary"
+  onclick="createGroup()"
+>
+  作成
+</button>
+
+<button
+  style="
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border-radius:10px;
+    background:#292f3b;
+    color:#fff;
+  "
+  onclick="closeModal()"
+>
+  キャンセル
+</button>
+
+`;
+
+
+    $("modal")
+      .classList
+      .remove("hidden");
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CREATE GROUP
+===================================================== */
+
+async function createGroup(){
+
+  const name =
+    $("groupName")
+      .value
+      .trim() ||
+    "新しいグループ";
+
+
+  const selected =
+    [
+      ...$("modalBox")
+        .querySelectorAll(
+          'input[type="checkbox"]:checked'
+        )
+    ]
+      .map(
+        input =>
+          input.value
+      );
+
+
+  if(
+    selected.length <
+    1
+  ){
+
+    toast(
+      "少なくとも1人のフレンドを選択してください。"
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const result =
+      await api(
+        "create_group",
+        {
+          name,
+          member_ids:
+            selected
+        }
+      );
+
+
+    closeModal();
+
+
+    await loadGroups();
+
+    await loadConversations();
+
+
+    showSection(
+      "chats"
+    );
+
+
+    if(
+      result.conversation
+    ){
+
+      await selectConversation(
+        result.conversation.id
+      );
+
+    }
+
+
+    toast(
+      "グループを作成しました"
+    );
+
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function closeModal(){
+
+  $("modal")
+    .classList
+    .add("hidden");
+
+}
+
+
+$("modal").addEventListener(
+  "click",
+  event => {
+
+    if(
+      event.target ===
+      $("modal")
+    ){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   ADMIN PANEL
+===================================================== */
+
+async function loadAdminUsers(){
+  if(!isAdmin) return;
+  $("adminStatus").textContent = "ユーザー一覧を読み込み中...";
+  $("adminUsers").innerHTML = "";
+  try{
+    const result = await api("admin_users");
+    adminUsersCache = Array.isArray(result.users) ? result.users : [];
+    renderAdminUsers(adminUsersCache, false);
+    $("adminStatus").textContent = `全 ${adminUsersCache.length} アカウント`;
+  }catch(error){
+    $("adminStatus").textContent = error.message || "ユーザー一覧を取得できませんでした。";
+  }
+}
+
+async function loadAdminBans(){
+  if(!isAdmin) return;
+  $("adminStatus").textContent = "BAN一覧を読み込み中...";
+  $("adminUsers").innerHTML = "";
+  try{
+    const result = await api("admin_ban_list");
+    adminUsersCache = Array.isArray(result.users) ? result.users : [];
+    renderAdminUsers(adminUsersCache, true);
+    $("adminStatus").textContent = `BAN中: ${adminUsersCache.length} アカウント`;
+  }catch(error){
+    $("adminStatus").textContent = error.message || "BAN一覧を取得できませんでした。";
+  }
+}
+
+function filterAdminUsers(){
+  const query = ($("adminSearch")?.value || "").trim().toLowerCase();
+  const filtered = adminUsersCache.filter(user =>
+    String(user.user_id || "").toLowerCase().includes(query) ||
+    String(user.display_name || "").toLowerCase().includes(query)
+  );
+  renderAdminUsers(filtered, null);
+}
+
+function renderAdminUsers(users, forceBanned = null){
+  if(!isAdmin) return;
+  $("adminUsers").innerHTML = users.length ? users.map(user => {
+    const banned = forceBanned === true || user.is_banned === true;
+    const created = user.created_at ? new Date(user.created_at).toLocaleString("ja-JP") : "不明";
+    const banInfo = banned
+      ? `<p style="color:#ff8798">BAN理由: ${safe(user.ban_reason || "理由は指定されていません")}</p>
+         <p class="muted">BAN日時: ${safe(user.banned_at ? new Date(user.banned_at).toLocaleString("ja-JP") : "不明")}</p>`
+      : "";
+    const actionButton = user.id === account?.id
+      ? `<button disabled title="自分自身はBANできません">自分のアカウント</button>`
+      : banned
+        ? `<button class="primarybtn" onclick="unbanAccount('${safe(user.id)}')">BAN解除</button>`
+        : `<button class="dangerbtn" onclick="banAccount('${safe(user.id)}','${safe(user.user_id)}')">BAN</button>`;
+    return `<div class="item">
+      <h3>${safe(user.display_name || user.user_id || "名前なし")}</h3>
+      <p>@${safe(user.user_id || "")}</p>
+      <p class="muted">登録日時: ${safe(created)}</p>
+      <p style="color:${banned ? "#ff8798" : "#7ee7ad"}">${banned ? "BAN中" : "利用可能"}</p>
+      ${banInfo}
+      ${actionButton}
+    </div>`;
+  }).join("") : `<div class="muted">該当するユーザーはいません。</div>`;
+}
+
+async function banAccount(accountId, userId){
+  if(!isAdmin) return;
+  const reason = prompt(`@${userId} をBANする理由を入力してください:`, "");
+  if(reason === null) return;
+  if(!confirm(`@${userId} をBANしますか？\\n理由: ${reason.trim() || "理由は指定されていません"}`)) return;
+  try{
+    await api("admin_ban", {account_id:accountId, reason:reason.trim()});
+    toast(`@${userId} をBANしました`);
+    await loadAdminUsers();
+  }catch(error){
+    toast(error.message || "BANに失敗しました");
+  }
+}
+
+async function unbanAccount(accountId){
+  if(!isAdmin) return;
+  if(!confirm("このアカウントのBANを解除しますか？")) return;
+  try{
+    const result = await api("admin_unban", {account_id:accountId});
+    toast(`@${result.user?.user_id || "ユーザー"} のBANを解除しました`);
+    await loadAdminBans();
+  }catch(error){
+    toast(error.message || "BAN解除に失敗しました");
+  }
+}
+
+
+/* =====================================================
+   REFRESH ALL
+===================================================== */
+
+async function refreshAll(){
+
+  if(!sessionToken)
+    return;
+
+
+  await Promise.all([
+    loadFriends(),
+    loadRequests(),
+    loadConversations(),
+    loadGroups()
+  ]);
+
+}
+
+
+/* =====================================================
+   SYNC
+===================================================== */
+
+function startPresenceHeartbeat(){
+  if(presenceTimer) clearInterval(presenceTimer);
+  const ping = async () => {
+    if(!sessionToken) return;
+    try {
+      await api("presence_ping");
+      // Refresh the displayed online state without changing the selected chat or composer.
+      await loadConversations();
+      if(currentConversation){
+        const conversation = conversationsCache.find(x => x.id === currentConversation);
+        if(conversation && conversation.type !== "group"){
+          const other = (conversation.members || []).find(m => m.id !== account?.id);
+          const line = $("chatHead")?.querySelector(".presence-line");
+          if(line && other){
+            line.innerHTML = `<i class="presence-dot ${other.online ? "online" : ""}"></i>${other.online ? "オンライン" : "オフライン"}`;
+          }
+        }
+      }
+    } catch(error) { console.warn("presence_ping:", error); }
+  };
+  ping();
+  presenceTimer = setInterval(ping, 20000);
+}
+
+function startSync(){
+
+  stopSync();
+  startPresenceHeartbeat();
+
+
+  /*
+    2.5秒ごとにサーバー側の
+    データだけ確認する。
+
+    入力欄は変更しない。
+    現在のアカウントも変更しない。
+    選択中チャットも変更しない。
+  */
+
+  syncTimer =
+    setInterval(
+      async () => {
+
+        if(!sessionToken)
+          return;
+
+
+        try{
+
+          await Promise.all([
+            loadRequests(),
+            loadFriends(),
+            loadConversations(),
+            loadGroups()
+          ]);
+
+
+        }catch(error){
+
+          console.error(
+            "sync:",
+            error
+          );
+
+        }
+
+      },
+      2500
+    );
+
+
+  startMessageSync();
+
+}
+
+
+function startMessageSync(){
+
+  if(messageTimer){
+
+    clearInterval(
+      messageTimer
+    );
+
+    messageTimer =
+      null;
+
+  }
+
+
+  if(!currentConversation)
+    return;
+
+
+  /*
+    メッセージだけ同期。
+    messageInputには触れない。
+  */
+
+  messageTimer =
+    setInterval(
+      async () => {
+
+        if(
+          sessionToken &&
+          currentConversation
+        ){
+
+          await loadMessages();
+
+        }
+
+      },
+      2000
+    );
+
+}
+
+
+function stopSync(){
+
+  if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; }
+  clearTimeout(typingStopTimer); typingStopTimer = null;
+  if(presenceTimer){ clearInterval(presenceTimer); presenceTimer = null; }
+  if(syncTimer){
+
+    clearInterval(
+      syncTimer
+    );
+
+    syncTimer =
+      null;
+
+  }
+
+
+  if(messageTimer){
+
+    clearInterval(
+      messageTimer
+    );
+
+    messageTimer =
+      null;
+
+  }
+
+}
+
+
+/* =====================================================
+   SESSION RESTORE
+===================================================== */
+
+async function restoreSession(){
+
+  const token =
+    localStorage.getItem(
+      TOKEN_KEY
+    );
+
+
+  if(!token){
+
+    return false;
+
+  }
+
+
+  sessionToken =
+    token;
+
+
+  try{
+
+    const result =
+      await api(
+        "me"
+      );
+
+
+    if(!result.account){
+
+      throw new Error(
+        "セッションが無効です。"
+      );
+
+    }
+
+
+    account =
+      result.account;
+
+
+    saveAccountShortcut(
+      account
+    );
+
+
+    await startApp();
+
+    return true;
+
+
+  }catch(error){
+
+    console.warn(
+      "session restore failed:",
+      error
+    );
+
+
+    localStorage.removeItem(
+      TOKEN_KEY
+    );
+
+
+    sessionToken =
+      null;
+
+    account =
+      null;
+
+
+    return false;
+
+  }
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+(async function(){
+
+  try{
+
+    const restored =
+      await restoreSession();
+
+
+    if(restored)
+      return;
+
+
+    $("auth")
+      .classList
+      .remove("hidden");
+
+    $("app")
+      .classList
+      .add("hidden");
+
+
+  }catch(error){
+
+    console.error(error);
+
+    $("authError").textContent =
+      error.message ||
+      "Distardを起動できませんでした。";
+
+  }
+
+})();
+
+
+window.addEventListener("DOMContentLoaded", () => applyTheme(document.body.dataset.theme));
+</script>
+
+</body>
+</html>
